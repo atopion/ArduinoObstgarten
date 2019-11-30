@@ -1,0 +1,3 @@
+C:/Users/atopi/CLionProjects/ArduinoObstgarten/cmake-build-debug/CMakeFiles/ArduinoObstgarten.dir
+C:/Users/atopi/CLionProjects/ArduinoObstgarten/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/atopi/CLionProjects/ArduinoObstgarten/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,8 @@
+//
+// Created by atopi on 30.11.2019.
+//
+
+#ifndef ARDUINOOBSTGARTEN_SPI_H
+#define ARDUINOOBSTGARTEN_SPI_H
+
+#endif //ARDUINOOBSTGARTEN_SPI_H
