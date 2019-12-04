@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2018.2.6\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\ArduinoObstgarten.dir/objects.a
-C:\Users\atopi\Codes\mingw-w64\bin\ar.exe cr CMakeFiles\ArduinoObstgarten.dir/objects.a @CMakeFiles\ArduinoObstgarten.dir\objects1.rsp
-C:\Users\atopi\Codes\mingw-w64\bin\x86_64-w64-mingw32-g++.exe -g   -Wl,--whole-archive CMakeFiles\ArduinoObstgarten.dir/objects.a -Wl,--no-whole-archive  -o ArduinoObstgarten.exe -Wl,--out-implib,libArduinoObstgarten.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ArduinoObstgarten.dir\linklibs.rsp
