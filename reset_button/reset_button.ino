@@ -38,13 +38,14 @@ void setup() {
 void loop() {
   // send the value of analog input 0:
   butt_stat = digitalRead(button);
-  if (butt_stat == LOW){
+  if (butt_stat == HIGH){
     Serial.println(reset_signal);
     //for(int i=0;i<100;i++){
       //Serial.println("!!!");
     //}
     
   }
+  Serial.print("l");
   Serial.println(analogRead(A0));
   // wait a bit for the analog-to-digital converter to stabilize after the last
   // reading:
