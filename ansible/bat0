@@ -1,0 +1,6 @@
+auto bat0
+iface bat0 inet auto
+    address 192.168.111.00
+    netmask 255.255.255.0
+    gateway 192.168.111.10
+    pre-up /usr/sbin/batctl if add wlan0
