@@ -2,7 +2,7 @@
 all:
     hosts:
         node1:
-            ansible_host: 192.168.178.48
+            ansible_host: 192.168.0.66
             ansible_python_interpreter: /usr/bin/python3 
             ansible_user: pi
             ansible_password: !vault |
@@ -13,7 +13,7 @@ all:
                3163393938363832360a393535363035346131336666333030323434393836626135616464366431
                6665
         node2:
-            ansible_host: 192.168.178.50
+            ansible_host: 192.168.0.197
             ansible_python_interpreter: /usr/bin/python3 
             ansible_user: pi
             ansible_password: !vault |
@@ -24,7 +24,7 @@ all:
                3163393938363832360a393535363035346131336666333030323434393836626135616464366431
                6665
         node3:
-            ansible_host: 192.168.178.51
+            ansible_host: 192.168.0.231
             ansible_python_interpreter: /usr/bin/python3 
             ansible_user: pi
             ansible_password: !vault |
@@ -35,7 +35,7 @@ all:
                3163393938363832360a393535363035346131336666333030323434393836626135616464366431
                6665
         gateway1:
-            ansible_host: 192.168.178.49
+            ansible_host: 192.168.0.245
             ansible_python_interpreter: /usr/bin/python3 
             ansible_user: pi
             ansible_password: !vault |

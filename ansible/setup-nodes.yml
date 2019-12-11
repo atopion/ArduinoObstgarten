@@ -6,6 +6,12 @@
       register: node
       ignore_errors: true
 
+    - name: Install aptitude
+      become: true
+      package:
+        name: aptitude
+        state: present
+
     - name: Upgrade all packages
       become: true
       apt:
@@ -46,16 +52,23 @@
     - name: Set startup to rc.local
       become: true
       lineinfile:
-        path: /etc/rc.local
+        dest: /etc/rc.local
         line: "{{ item.line }}"
-        insertbefore: "{{ item.before }}"
+        insertafter: "{{ item.after }}"
+        state: present
       with_items: 
-        - { line: "batctl if add wlan0", before: "exit 0" }
-        - { line: "ifconfig wlan0 up", before: "exit 0" }
-        - { line: "  ", before: "exit 0" }
-        - { line: "ifconfig bat0 up", before: "exit 0" }
-        - { line: "ifconfig bat0 192.168.111.{{ node.stdout }}", before: "exit 0" }
-        - { line: "batctl gw client", before: "exit 0" }
+        - { line: "batctl if add wlan0", after: "^fi" }
+        - { line: "ifconfig wlan0 up", after: "^batctl if add wlan0" }
+        - { line: "ifconfig bat0 up", after: "^ifconfig wlan0 up" }
+        - { line: "ifconfig bat0 192.168.111.{{ node.stdout }}", after: "^ifconfig bat0 up" }
+        - { line: "batctl gw client", after: "^ifconfig bat0 192.168.111.{{ node.stdout }}" }
+        - { line: "route add default gw 192.168.111.10 bat0", after: "^batctl gw client" }
+
+    - name: Set nameserver to 8.8.8.8
+      become: true
+      lineinfile:
+        dest: /etc/resolv.conf
+        line: "nameserver 8.8.8.8"
 
     - name: Copy wlan0
       become: true
@@ -78,6 +91,6 @@
     - name: Stop dhcpd from using wlan0
       become: true
       lineinfile:
-        path: /etc/dhcpcd.conf
+        dest: /etc/dhcpcd.conf
         line: denyinterfaces wlan0
 
