@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Create a new account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form>
+    <div class="placeholder">
+      <img src="{{image}}" alt="Avatar">
+    </div>
+
+    <div class="create-username">
+      <label for="create.username">Choose your username</label>
+      <label class="create-hint" #hint.username></label>
+      <input type="text"
+             placeholder="Enter your username"
+             id="create.username"
+             #create.username
+             name="username"
+             [(ngModel)]="username"
+             (blur)="validateUsername()"
+             required>
+    </div>
+
+    <div class="create-password">
+      <label for="create.password">Enter your password</label>
+      <label class="create-hint" #hint.password></label>
+      <input type="password"
+             placeholder="Enter your password"
+             id="create.password"
+             #create.password
+             name="password"
+             [(ngModel)]="password"
+             (blur)="validatePassword()"
+             required>
+    </div>
+
+    <div class="create-password">
+      <label for="create.password-confirm">Confirm your password</label>
+      <label class="create-hint" #hint.password.confirm></label>
+      <input type="password"
+             placeholder="Enter your password again"
+             id="create.password-confirm"
+             #create.password.confirm
+             name="password_confirm"
+             (blur)="validatePasswordConfirm()"
+             [(ngModel)]="password_confirm"
+             required>
+    </div>
+
+    <ion-button style="right: 10px" (click)="create()" type="submit">
+      Create the account.
+    </ion-button>
+  </form>
+</ion-content>

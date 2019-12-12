@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form>
+    <div class="placeholder">
+      <img src="{{image}}" alt="Avatar">
+    </div>
+
+    <div class="login-username">
+      <label for="login/username">Username</label>
+      <input type="text" placeholder="Enter Username" id="login/username" name="login/username" [(ngModel)]="username" required>
+    </div>
+
+    <div class="login-password">
+      <label for="login/password">Password</label>
+      <input type="password" placeholder="Enter Password" id="login/password" name="login/password" [(ngModel)]="password" required>
+    </div>
+
+    <ion-button style="left: 10px" color="success" routerLink="/create-account">
+      Create new account
+    </ion-button>
+    <ion-button style="right: 10px" (click)="login()" type="submit">
+      Login
+    </ion-button>
+  </form>
+</ion-content>
