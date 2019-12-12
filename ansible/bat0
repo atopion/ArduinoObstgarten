@@ -4,3 +4,4 @@ iface bat0 inet auto
     netmask 255.255.255.0
     gateway 192.168.111.10
     pre-up /usr/sbin/batctl if add wlan0
+    post-up /sbin/route add default gw 192.168.111.10 bat0
