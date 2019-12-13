@@ -1,6 +1,8 @@
 form {
-  width: 500px;
-  height: 500px;
+  width: 100vw;
+  height: 90vh;
+  max-width: 500px;
+  max-height: 500px;
   border: 1px solid #999999;
   position: absolute;
   left: 50%;

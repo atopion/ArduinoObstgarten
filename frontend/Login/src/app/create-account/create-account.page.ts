@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 
-const URL = "https://localhost:3000";
+const URL = "http://localhost:3000/usr";
 
 @Component({
   selector: 'app-create-account',
@@ -95,7 +95,6 @@ export class CreateAccountPage implements OnInit, AfterViewInit {
     const pass = this.password;
     (async function() {
       const xhr = new XMLHttpRequest();
-      xhr.setRequestHeader('Content-type', 'application/json');
       xhr.onload = () => {
         if(xhr.status === 200 && xhr.readyState === 4) {
           // ...
@@ -103,6 +102,7 @@ export class CreateAccountPage implements OnInit, AfterViewInit {
         }
       };
       xhr.open("POST", URL, true);
+      xhr.setRequestHeader('Content-type', 'application/json');
       xhr.send(JSON.stringify({user: user, pass: pass}));
     })();
   }

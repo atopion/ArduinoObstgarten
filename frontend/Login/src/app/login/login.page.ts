@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-const URL = "https://localhost:3000";
+const URL = "http://localhost:3000/usr";
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,6 @@ export class LoginPage implements OnInit {
     const pass = this.password;
     (async function() {
       const xhr = new XMLHttpRequest();
-      xhr.setRequestHeader('Content-type', 'application/json');
       xhr.onload = () => {
         if(xhr.status === 200 && xhr.readyState === 4) {
           // ...
@@ -41,6 +40,7 @@ export class LoginPage implements OnInit {
         }
       };
       xhr.open("POST", URL, true);
+      xhr.setRequestHeader('Content-type', 'application/json');
       xhr.send(JSON.stringify({user: user, pass: pass}));
     })();
   }
