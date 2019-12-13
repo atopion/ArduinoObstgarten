@@ -94,3 +94,9 @@
         dest: /etc/dhcpcd.conf
         line: denyinterfaces wlan0
 
+    - name: Stop dhcpd from using bat0
+      become: true
+      lineinfile:
+        dest: /etc/dhcpcd.conf
+        line: denyinterfaces bat0
+
