@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <form>
+  <form id="loginForm">
     <div class="placeholder">
       <img src="{{image}}" alt="Avatar">
     </div>
@@ -20,11 +20,18 @@
       <input type="password" placeholder="Enter Password" id="login/password" name="login/password" [(ngModel)]="password" required>
     </div>
 
+    <input type="hidden" id="login/hidden/user" name="user">
+    <input type="hidden" id="login/hidden/pass" name="pass">
+
     <ion-button style="left: 10px" color="success" routerLink="/create-account">
       Create new account
     </ion-button>
-    <ion-button style="right: 10px" (click)="login()" type="submit">
+    <ion-button style="right: 10px">
+      <input style="display: none" type="submit">
       Login
     </ion-button>
+    <!--<ion-button style="right: 10px" type="submit">
+        Login
+    </ion-button>-->
   </form>
 </ion-content>

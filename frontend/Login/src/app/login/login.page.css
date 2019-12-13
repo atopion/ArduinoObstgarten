@@ -32,13 +32,20 @@ form .login-password {
 form label {
   font-weight: bold;
 }
-form input {
+form input:not([type=submit]) {
   width: 98%;
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+}
+form input[type=submit] {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
 }
 form ion-button {
   position: absolute;
