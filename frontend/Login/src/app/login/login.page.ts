@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import * as bigInt from "big-integer";
+import * as sha from "js-sha256";
 
 @Component({
   selector: 'app-login',
@@ -32,10 +33,11 @@ export class LoginPage implements OnInit {
   }
 
   login(e: Event) {
-    e.preventDefault();
+    if(e)
+      e.preventDefault();
     if(!this.validate())
       return;
-    console.log("Loggin in with\n  username: ", this.username, "\n  password: ", this.password);
+    console.log("Logging in with\n  username: ", this.username, "\n  password: ", this.password);
 
     const form = <HTMLFormElement>document.getElementById('loginForm');
     console.log(form);
@@ -43,27 +45,68 @@ export class LoginPage implements OnInit {
     const user = <HTMLInputElement>document.getElementById("login/hidden/user");
     const pass = <HTMLInputElement>document.getElementById("login/hidden/pass");
 
-    user.value = this.username;
-    pass.value = this.password;
+    const user_field = <HTMLInputElement>document.getElementById("login/username");
+    const pass_field = <HTMLInputElement>document.getElementById("login/password");
 
-    form.method = "post";
-    form.action = this.postURL;
-    form.submit();
+    user_field.disabled = true;
+    pass_field.disabled = true;
 
-    /*const user = this.username;
-    const pass = this.password;
+    //pass.value = this.password;
     const url = this.postURL;
+    const username = this.username;
+    const password = this.password;
+
+    /*form.method = "post";
+    form.action = this.postURL;
+    form.submit();*/
+
+
     (async function() {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => {
-        if(xhr.status === 200 && xhr.readyState === 4) {
-          // ...
-          alert("Success");
+        if(xhr.readyState === 4) {
+          if(xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            if(!data.G || !data.P) {
+              alert("Data transmission error");
+            }
+            else {
+              console.log("T: " + typeof data.G);
+              console.log("A: " + data.G);
+
+              let G = bigInt(data.G, 16);
+              let P = bigInt(data.P, 16);
+
+              let start = performance.now();
+              let small_b = bigInt(sha.sha256(password), 16);
+              let end = performance.now();
+              console.log("SHA 256 time: " + (end - start));
+
+              start = performance.now();
+              let big_b = bigInt(G).modPow(bigInt(small_b), bigInt(P)).toString(16);
+              end = performance.now();
+              console.log("modPow time: " + (end - start));
+
+              console.log("Big_b: " + big_b);
+
+              user.value = username;
+              pass.value = big_b;
+
+              form.method = "post";
+              form.action = url;
+              form.submit();
+
+              user_field.disabled = false;
+              pass_field.disabled = false;
+            }
+          }
+          else {
+            console.log(xhr.status);
+          }
         }
       };
-      xhr.open("POST", url, true);
-      xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.send(JSON.stringify({user: user, pass: pass}));
-    })();*/
+      xhr.open("OPTIONS", url, true);
+      xhr.send();
+    })();
   }
 }

@@ -1,15 +1,17 @@
-import {AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
-
-const URL = "http://localhost:3000/usr";
+import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import * as sha from 'js-sha256';
+import * as bigInt from 'big-integer'
 
 @Component({
   selector: 'app-create-account',
   templateUrl: './create-account.page.html',
   styleUrls: ['./create-account.page.scss'],
 })
-export class CreateAccountPage implements OnInit, AfterViewInit {
+export class CreateAccountPage implements OnInit {
 
   image: string = "https://source.unsplash.com/4miBe6zg5r0/800x450";
+
+  postURL = "http://localhost:3000/create";
 
   username: string = "";
   password: string = "";
@@ -29,12 +31,8 @@ export class CreateAccountPage implements OnInit, AfterViewInit {
 
   constructor(private renderer: Renderer2) { }
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    console.log(this.input_username);
-    console.log(this.input_password);
-    console.log(this.input_password_confirm);
+  ngOnInit() {
+    document.getElementById('createAccountForm').onsubmit = this.create.bind(this);
   }
 
   validateUsername() {
@@ -91,19 +89,60 @@ export class CreateAccountPage implements OnInit, AfterViewInit {
     // TODO create user
     console.log("Creating:\n\tusername: ", this.username, "\n\tpassword: ", this.password);
 
-    const user = this.username;
-    const pass = this.password;
+    const form = <HTMLFormElement>document.getElementById('createAccountForm');
+    console.log(form);
+
+    const user = <HTMLInputElement>document.getElementById("createAccount/hidden/user");
+    const pass = <HTMLInputElement>document.getElementById("createAccount/hidden/pass");
+
+    const username = this.username;
+    const password = this.password;
+
+    const url = this.postURL;
+
     (async function() {
       const xhr = new XMLHttpRequest();
       xhr.onload = () => {
-        if(xhr.status === 200 && xhr.readyState === 4) {
-          // ...
-          alert("Success");
+        if(xhr.readyState === 4) {
+          if(xhr.status === 201) {
+            const data = JSON.parse(xhr.responseText);
+            if(!data.big_a || !data.P) {
+              alert("Data transmission error");
+            }
+            else {
+              console.log("T: " + typeof data.big_a);
+              console.log("A: " + data.big_a);
+
+              let big_a = bigInt(data.big_a);
+              let P = bigInt(data.P);
+
+              let start = performance.now();
+              let small_b = bigInt(sha.sha256(password), 16);
+              let end = performance.now();
+              console.log("SHA 256 time: " + (end - start));
+
+              start = performance.now();
+              let key = bigInt(big_a).modPow(bigInt(small_b), bigInt(P)).toString(16);
+              end = performance.now();
+              console.log("modPow time: " + (end - start));
+
+              console.log("Key: " + key);
+
+              pass.value = key;
+              user.value = username;
+
+              form.method = "post";
+              form.action = url;
+              form.submit();
+            }
+          }
+          else if(xhr.status === 401) {
+            alert("Could not create user");
+          }
         }
       };
-      xhr.open("POST", URL, true);
-      xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.send(JSON.stringify({user: user, pass: pass}));
+      xhr.open("OPTIONS", url + "?user=" + username, true);
+      xhr.send();
     })();
   }
 
