@@ -1,0 +1,10 @@
+ion-menu {
+  --width: 250px;
+}
+
+.split-pane-visible > .split-pane-side {
+  min-width: 250px !important;
+  max-width: 250px !important;
+}
+
+/*# sourceMappingURL=app.component.css.map */

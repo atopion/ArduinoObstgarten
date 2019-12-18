@@ -53,6 +53,20 @@ function generateSession(): string {
     return res;
 }
 
+function sessionLogout(req: express.Request): boolean {
+    if(!req.cookies["SESSION"] || req.cookies["SESSION"] === "")
+        return false;
+    let k: string | null = null;
+    sessions.forEach((value, key, map) => {
+        if(value === req.cookies["SESSION"])
+            k = key;
+    });
+    if(!k)
+        return false;
+    sessions.delete(k);
+    return true;
+}
+
 function sessionsAsString(): string {
     let arr: Array<{username: string, sessionID: string}> = [];
     sessions.forEach((value, key) => {
@@ -218,6 +232,16 @@ app.post('/usr', (req: express.Request, res: express.Response) => {
             res.status(401).send("Forbidden");
         }
     })
+});
+
+app.post('/logout', (req: express.Request, res: express.Response) => {
+    if(!isLoggedIn(req)) {
+        res.status(401).send("Forbidden");
+    } else if(sessionLogout(req)) {
+        res.status(200).send("Logged out");
+    } else {
+        res.status(401).send("Forbidden");
+    }
 });
 
 app.options('/usr', (req: express.Request, res: express.Response) => {

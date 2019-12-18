@@ -29,11 +29,33 @@ function isLoggedIn(req) {
     });
     return hit;
 }
+function getUserForSession(req) {
+    if (!req.cookies["SESSION"] || req.cookies["SESSION"] === "")
+        return null;
+    sessions.forEach((value, key) => {
+        if (value === req.cookies["SESSION"])
+            return key;
+    });
+    return null;
+}
 function generateSession() {
     let res = '';
     for (let i = 1; i <= 48; i++)
         res += (Math.floor(Math.random() * 16)).toString(16) + (i % 8 === 0 && i !== 48 ? '-' : '');
     return res;
+}
+function sessionLogout(req) {
+    if (!req.cookies["SESSION"] || req.cookies["SESSION"] === "")
+        return false;
+    let k = null;
+    sessions.forEach((value, key, map) => {
+        if (value === req.cookies["SESSION"])
+            k = key;
+    });
+    if (!k)
+        return false;
+    sessions.delete(k);
+    return true;
 }
 function sessionsAsString() {
     let arr = [];
@@ -88,13 +110,14 @@ function user_exists_get(user, res, cb) {
             }
             cb(val);
         }).catch(e => {
+            console.error(e);
             res.status(500).send("Server error");
         });
     });
 }
 /* Logger */
 app.use(function (req, res, next) {
-    console.log("[", new Date(Date.now()).toUTCString(), "]: Request from", req.connection.remoteAddress, ", Method:", req.method, ", Path:", req.path, ", Session: ", req.cookies["SESSION"]);
+    console.log("[", new Date(Date.now()).toUTCString(), "]: Request from", req.connection.remoteAddress, ", Method:", req.method, ", Path:", req.path, req.method.toLowerCase() === "post" ? ", Post parameters:" : "", req.method.toLowerCase() === "post" ? req.body : "", ", Session: ", req.cookies["SESSION"]);
     next();
 });
 /* Server code */
@@ -158,25 +181,39 @@ app.post('/usr', (req, res) => {
         return;
     }
     let usr = req.body.user;
-    let pass = BigInt(req.body.pass);
+    let pass = BigInt("0x" + req.body.pass);
     user_exists_get(usr, res, (val) => {
         let v = JSON.parse(val);
-        let small_a = BigInt(v.small_a.toString(16));
-        let k = BigInt(v.k.toString(16));
+        let small_a = BigInt("0x" + v.small_a);
+        let k = BigInt("0x" + v.k);
         let passkey = libcrypto.calculate_key_from_big_b(pass, small_a);
         if (libcrypto.compare(passkey, k)) {
-            let ses = null;
+            let ses;
             if (sessions.has(usr)) {
                 ses = sessions.get(usr);
             }
             else {
-                let ses = generateSession();
+                ses = generateSession();
                 sessions.set(usr, ses);
             }
             res.cookie("SESSION", ses, { maxAge: 1800000, expires: new Date(Date.now() + 1800000) });
             res.redirect(303, '/');
         }
+        else {
+            res.status(401).send("Forbidden");
+        }
     });
+});
+app.post('/logout', (req, res) => {
+    if (!isLoggedIn(req)) {
+        res.status(401).send("Forbidden");
+    }
+    else if (sessionLogout(req)) {
+        res.redirect(303, '/');
+    }
+    else {
+        res.status(401).send("Forbidden");
+    }
 });
 app.options('/usr', (req, res) => {
     res.status(200).json({ P: libcrypto.P.toString(16), G: libcrypto.G.toString(16) });
