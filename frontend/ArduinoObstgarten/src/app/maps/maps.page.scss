@@ -1,0 +1,46 @@
+
+.selection {
+    width: calc(100% - 20px);
+    font-weight: bold;
+    margin: 10px;
+
+    div {
+        max-width: 320px;
+        float: left;
+        padding: 10px;
+
+        font-weight: bold;
+    }
+
+    ion-select {
+        max-width: 320px;
+        float: right;
+    }
+}
+
+.container {
+    width: 100vw;
+    text-align: center;
+}
+
+#heatmapContainer {
+    width: calc(100vw - 20px);
+    height: calc(100vw - 20px);
+
+    max-width: 500px;
+    max-height: 500px;
+
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.spinnerContainer {
+    width: 100vw;
+    height: 50vw;
+
+    text-align: center;
+
+    ion-spinner {
+        top: 50%;
+    }
+}

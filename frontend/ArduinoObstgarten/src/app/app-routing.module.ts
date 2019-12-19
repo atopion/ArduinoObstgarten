@@ -12,13 +12,18 @@ const routes: Routes = [
         loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
     },
     {
-        path: 'list',
-        loadChildren: () => import('./list/list.module').then(m => m.ListPageModule)
+        path: 'maps',
+        loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
     },
     {
-        path: 'humidity',
-        loadChildren: () => import('./humidity/humidity.module').then( m => m.HumidityPageModule)
-    }
+        path: 'user',
+        loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+    },
+    {
+        path: '**',
+        redirectTo: 'home',
+        pathMatch: 'full'
+    },
 ];
 
 @NgModule({

@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { HumidityPageRoutingModule } from './humidity-routing.module';
+import { UserPageRoutingModule } from './user-routing.module';
 
-import { HumidityPage } from './humidity.page';
+import { UserPage } from './user.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HumidityPageRoutingModule
+    UserPageRoutingModule
   ],
-  declarations: [HumidityPage]
+  declarations: [UserPage]
 })
-export class HumidityPageModule {}
+export class UserPageModule {}

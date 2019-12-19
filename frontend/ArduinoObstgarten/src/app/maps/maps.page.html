@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Maps</ion-title>
+        <ion-buttons slot="end">
+            <ion-button routerLink="/user">
+                {{username}}
+            </ion-button>
+            <ion-button (click)="logout.logout()">
+                <ion-icon name="power"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <table class="selection">
+        <tr>
+            <td style="text-align: left">Select the map to view:</td>
+            <td style="text-align: right">
+                <ion-select interface="popover" value="humidity" (ionChange)="generateData()">
+                    <ion-select-option *ngFor="let entry of maps" value="{{entry.value}}">{{entry.name}}</ion-select-option>
+                </ion-select>
+            </td>
+        </tr>
+    </table>
+
+    <div id="heatmapContainer" #heatmapContainer [hidden]="mapLoading"></div>
+    <div class="spinnerContainer" [hidden]="!mapLoading">
+        <ion-spinner duration="indefinite"></ion-spinner>
+    </div>
+
+</ion-content>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {LogoutService} from "../logout.service";
 
 @Component({
     selector: 'app-home',
@@ -7,24 +8,9 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-    username = "USER";
+    username = LogoutService.username;
 
-    constructor() {}
-
-    logout() {
-        const logout_url = "http://localhost:3000/logout";
-
-        (async () => {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", logout_url);
-            xhr.onload = () => {
-                if (xhr.readyState === 4 && xhr.status === 401) {
-                    alert("You are not logged in.");
-                } else if (xhr.readyState === 4 && xhr.status === 200) {
-                    window.location.reload();
-                }
-            };
-            xhr.send("");
-        })();
+    constructor(private logout: LogoutService) {
+        console.log(this.username)
     }
 }
