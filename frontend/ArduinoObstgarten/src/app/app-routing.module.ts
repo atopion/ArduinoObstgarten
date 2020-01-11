@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
     },
     {
+        path: 'maturity',
+        loadChildren: () => import('./maturity/maturity.module').then( m => m.MaturityPageModule)
+    },
+    {
         path: '**',
         redirectTo: 'home',
         pathMatch: 'full'
