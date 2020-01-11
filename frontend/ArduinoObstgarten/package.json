@@ -25,6 +25,7 @@
     "@ionic/angular": "^4.7.1",
     "@types/heatmap.js": "^2.0.36",
     "core-js": "^2.5.4",
+    "eslint": "^6.8.0",
     "heatmap.js": "^2.0.5",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",

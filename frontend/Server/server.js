@@ -209,7 +209,7 @@ app.post('/logout', (req, res) => {
         res.status(401).send("Forbidden");
     }
     else if (sessionLogout(req)) {
-        res.redirect(303, '/');
+        res.status(200).send("Logged out");
     }
     else {
         res.status(401).send("Forbidden");
