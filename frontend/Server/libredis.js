@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const r = require("redis");
-const redis_host = process.env.REDIS_HOST || "localhost";
+const redis_host = process.env.REDIS_HOST || "redis";
 const redis_port = process.env.REDIS_PORT || "5000";
 // TODO: Change before deployment
-const redis_pass = process.env.REDIS_PASS || "H232AiMZy1LdXH5DMsrsHKfKRxJFxgzVq3tJd4Ic6OPUuDU88i2gHlroqYfg7PNqSArlMU62bEETokghAhcZGCn6gMYN6s5pH0RBhQPIuLScuLnMyI6EfnSUnbIaJeeh";
+const redis_pass = process.env.REDIS_PASS || "r1bu3hnw3wt88gutatdc0qo6rmx19u50p1vnqzgpysytbtx9d8cw3rr3obixf7suczizq6xwxqpzck79";
 class RedisConnector {
     constructor() {
         this.client = r.createClient({

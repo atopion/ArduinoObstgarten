@@ -13,8 +13,8 @@ const intern: express.Application = express();
 
 const PORT = 3000;
 const INTERN_PORT = 3030;
-const FOLDER_LOGIN = '../Login/www';
-const FOLDER_PAGE  = '../ArduinoObstgarten/www';
+const FOLDER_LOGIN = '/dist/Login/www';
+const FOLDER_PAGE  = '/dist/ArduinoObstgarten/www';
 
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));

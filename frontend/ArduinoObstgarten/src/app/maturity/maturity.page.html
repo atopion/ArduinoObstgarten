@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Maps</ion-title>
+        <ion-title>Maturity</ion-title>
         <ion-buttons slot="end">
             <ion-button routerLink="/user">
                 {{username}}
@@ -16,9 +16,12 @@
 </ion-header>
 
 <ion-content>
+    <div class="description-block">
+        Here you can see the current maturity of certain positions. The maturity for different plants is based on expected values for the plants growth rate.
+    </div>
     <table class="selection">
         <tr>
-            <td style="text-align: left">Please select the data to be displayed:</td>
+            <td style="text-align: left">Please select the plant type for this field: </td>
             <td style="text-align: right">
                 <ion-select interface="popover" value="1" [(ngModel)]="selectedMap" (ionChange)="loadNewImage()">
                     <ion-select-option *ngFor="let entry of maps" value="{{entry.id}}">{{entry.name}}</ion-select-option>

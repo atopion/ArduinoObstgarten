@@ -17,9 +17,14 @@ export class AppComponent {
             icon: 'home'
         },
         {
-            title: 'Maps',
+            title: 'Current',
             url: '/maps',
             icon: 'map'
+        },
+        {
+            title: 'Maturity',
+            url: '/maturity',
+            icon: 'cloud'
         }
 
     ];

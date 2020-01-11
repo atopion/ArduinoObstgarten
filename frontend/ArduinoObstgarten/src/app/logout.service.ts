@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class LogoutService {
 
-    static username = "atopion";
+    static username = "user";
 
     constructor() { }
 
