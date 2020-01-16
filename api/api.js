@@ -8,15 +8,20 @@ console.log(path.DB_path)
 const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+var not_connected = true;
 
 
 app.use(cookieParser());
 
 // create DB, if already existing do not override
-client.createDatabase().catch(err => {
-    console.error('create database fail err:', err);
-});
+setTimeout(function() {
+    client.createDatabase().catch(err => {
+        console.error('create database fail err:', err); 
+    });
+}, 60000);
+
+
 
 const users = JSON.parse(fs.readFileSync("./users.json", "utf-8")); // read data of known users
 
