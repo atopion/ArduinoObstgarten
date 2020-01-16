@@ -9,7 +9,7 @@ const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-var not_connected = true;
+
 
 
 app.use(cookieParser());
