@@ -8,15 +8,32 @@ console.log(path.DB_path)
 const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+
 
 
 app.use(cookieParser());
 
-// create DB, if already existing do not override
-client.createDatabase().catch(err => {
-    console.error('create database fail err:', err);
+/* Logger */
+app.use(function (req, res, next) {
+    console.log(
+        "[", new Date(Date.now()).toUTCString(),
+        "]: Request from", req.connection.remoteAddress,
+        ", Method:", req.method,
+        ", Path:", req.path,
+        req.method.toLowerCase() === "post" ? ", Post parameters:" : "", req.method.toLowerCase() === "post" ? req.body : "",
+        ", Session: ", req.cookies["SESSION"]);
+    next();
 });
+
+// create DB, if already existing do not override
+setTimeout(function() {
+    client.createDatabase().catch(err => {
+        console.error('create database fail err:', err); 
+    });
+}, 10000);
+
+
 
 const users = JSON.parse(fs.readFileSync("./users.json", "utf-8")); // read data of known users
 
@@ -95,7 +112,7 @@ app.get("/usr", (req, res) => {
     const cookie = req.cookies["SESSION"];  // session id
 
     // request valid session ids
-    request("http://localhost:3030/sessions", function (error, response, body) {
+    request("http://server:3030/sessions", function (error, response, body) {
 
         valid_sessions = JSON.parse(body);
         console.log('error:', error); // Print the error if one occurred
@@ -136,7 +153,7 @@ app.get("/query", (req, res) => {
     //console.log(sensor_type);
 
     // request valid session ids
-    request("http://localhost:3030/sessions", function (error, response, body) {
+    request("http://server:3030/sessions", function (error, response, body) {
 
         valid_sessions = JSON.parse(body);
         console.log('error:', error); // Print the error if one occurred
@@ -157,6 +174,7 @@ app.get("/query", (req, res) => {
         }
         else {
             console.log("Invalid Session ID");
+            res.status(401).send("Forbidden");
             return;
         }
 
