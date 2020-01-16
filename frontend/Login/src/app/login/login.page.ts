@@ -9,7 +9,7 @@ import * as sha from "js-sha256";
 })
 export class LoginPage implements OnInit {
 
-  postURL: string = "http://localhost:3000/usr";
+  postURL: string = "http://" + window.location.hostname + "/usr";
 
   image: string = "https://source.unsplash.com/ygCOdo61k3E/800x450";
 
