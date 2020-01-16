@@ -100,7 +100,7 @@ app.get("/usr", (req, res) => {
     const cookie = req.cookies["SESSION"];  // session id
 
     // request valid session ids
-    request("http://localhost:3030/sessions", function (error, response, body) {
+    request("http://server:3030/sessions", function (error, response, body) {
 
         valid_sessions = JSON.parse(body);
         console.log('error:', error); // Print the error if one occurred
@@ -141,7 +141,7 @@ app.get("/query", (req, res) => {
     //console.log(sensor_type);
 
     // request valid session ids
-    request("http://localhost:3030/sessions", function (error, response, body) {
+    request("http://server:3030/sessions", function (error, response, body) {
 
         valid_sessions = JSON.parse(body);
         console.log('error:', error); // Print the error if one occurred
