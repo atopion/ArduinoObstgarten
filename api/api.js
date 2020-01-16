@@ -85,6 +85,43 @@ function postToDB(req, res, next) {
   };
 
 
+app.get("/usr", (req, res) => {
+    // check if request, cookies and session id are provided
+    if(!req || !req.cookies || !req.cookies["SESSION"]) {
+        res.status(401).send("Forbidden");
+        return;
+    }
+
+    const cookie = req.cookies["SESSION"];  // session id
+
+    // request valid session ids
+    request("http://localhost:3030/sessions", function (error, response, body) {
+
+        valid_sessions = JSON.parse(body);
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+
+        var session_found = false; // indicating whether given cookie session id is valid
+
+        // check if session id is in list of valid ids
+        for (s in valid_sessions) {
+            if (valid_sessions[s].sessionID == cookie) {
+                req_username = valid_sessions[s].username
+                session_found = true;
+            }
+        }
+
+        if(session_found) 
+            res.status(200).send(req_username);
+        else
+            res.status(401).send("Forbidden");
+
+
+    });
+});
+
+
 app.get("/query", (req, res) => {
 
     // check if request, cookies and session id are provided
@@ -99,7 +136,7 @@ app.get("/query", (req, res) => {
     //console.log(sensor_type);
 
     // request valid session ids
-    request("http://localhost:3001/sessions", function (error, response, body) {
+    request("http://localhost:3030/sessions", function (error, response, body) {
 
         valid_sessions = JSON.parse(body);
         console.log('error:', error); // Print the error if one occurred
