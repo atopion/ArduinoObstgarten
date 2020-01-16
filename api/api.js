@@ -19,7 +19,7 @@ setTimeout(function() {
     client.createDatabase().catch(err => {
         console.error('create database fail err:', err); 
     });
-}, 60000);
+}, 0);
 
 
 
