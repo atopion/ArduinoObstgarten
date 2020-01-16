@@ -14,6 +14,18 @@ var not_connected = true;
 
 app.use(cookieParser());
 
+/* Logger */
+app.use(function (req, res, next) {
+    console.log(
+        "[", new Date(Date.now()).toUTCString(),
+        "]: Request from", req.connection.remoteAddress,
+        ", Method:", req.method,
+        ", Path:", req.path,
+        req.method.toLowerCase() === "post" ? ", Post parameters:" : "", req.method.toLowerCase() === "post" ? req.body : "",
+        ", Session: ", req.cookies["SESSION"]);
+    next();
+});
+
 // create DB, if already existing do not override
 setTimeout(function() {
     client.createDatabase().catch(err => {
@@ -162,6 +174,7 @@ app.get("/query", (req, res) => {
         }
         else {
             console.log("Invalid Session ID");
+            res.status(401).send("Forbidden");
             return;
         }
 
