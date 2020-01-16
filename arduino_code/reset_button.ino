@@ -47,6 +47,11 @@ void loop() {
   }
   Serial.print("l");
   Serial.println(analogRead(A0));
+
+  Serial.print("h");
+  Serial.println(analogRead(A1));
+  
+  Serial.println("e");
   // wait a bit for the analog-to-digital converter to stabilize after the last
   // reading:
   delay(2);

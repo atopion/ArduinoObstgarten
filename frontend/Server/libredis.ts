@@ -1,6 +1,6 @@
 import r = require("redis");
 
-const redis_host = process.env.REDIS_HOST || "localhost";
+const redis_host = process.env.REDIS_HOST || "redis";
 const redis_port = process.env.REDIS_PORT || "5000";
 // TODO: Change before deployment
 const redis_pass = process.env.REDIS_PASS || "r1bu3hnw3wt88gutatdc0qo6rmx19u50p1vnqzgpysytbtx9d8cw3rr3obixf7suczizq6xwxqpzck79";

@@ -9,7 +9,7 @@ import {Events} from "@ionic/angular";
 })
 export class MapsPage implements OnInit, AfterViewInit {
 
-    username = LogoutService.username;
+    username = this.logout.username;
 
     mapLoading: boolean = true;
     screenWidth: number = 0;

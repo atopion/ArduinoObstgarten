@@ -11,7 +11,7 @@ export class CreateAccountPage implements OnInit {
 
   image: string = "https://source.unsplash.com/4miBe6zg5r0/800x450";
 
-  postURL = "http://localhost:3000/create";
+  postURL = window.location.protocol + "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "80") + "/create";
 
   username: string = "";
   password: string = "";

@@ -1,31 +1,57 @@
 import serial
+import requests
 import time
 import sys
 import os
 
-ser = serial.Serial("/dev/ttyACM0", 9600)
+sleeptime = 300
+sleepcounter = 0
 
-print(ser.name)
+nodekey = open("/etc/nodekey").read()
+
+serial = serial.Serial("/dev/ttyACM0", 9600)
+
+print(serial.name)
 val = ""
-while True:
-    data = ser.read()
 
-    if data.decode() == "\n":
+packet_sunlight = { 'key': nodekey, 'type': 'sunlight', 'sensor': 0, 'value': 0.0 }
+packet_humidity = { 'key': nodekey, 'type': 'sunlight', 'sensor': 0, 'value': 0.0 }
+
+while True:
+    data = serial.read().decode()
+
+    if data == "&":
+        print("Received Reset Signal, resetting Pi...")
+        time.sleep(0.1)
+        os.system("/sbin/shutdown -r now")
+        sys.exit(0)
+
+    else if data == "\n":
         if val.startswith("l"):
-            print("it's light")
+            packet_sunlight['value'] = float(val[1:])
+        else if val.startswith("h"):
+            packet_humidity['value'] = float(val[1:])
+        else: 
+            continue
         print(val)
         val = ""
-        continue
+
+    else if data == "e":
+        jsonstr = json.dumps(packet)
+        requests.post("http://bat-obstgarten.de:3000", json=packet_sunlight)
+        requests.post("http://bat-obstgarten.de:3000", json=packet_humidity)
+
+        time.sleep(sleeptime)
+        sleepcounter += 1
+        serial.flush()
+
+        if sleepcounter >= 288:
+            time.sleep(0.1)
+            os.system("/sbin/shutdown -r now")
+            sys.exit(0)
+
     else:
-        val += data.decode()
-    if data.decode() == "&":
-        print("Received Reset Signal, resetting Pi...")
-        # time.sleep(0.1)
-        # os.system("/sbin/shutdown -r now")
-        #sys.exit(0)
-    else:
-        continue
-        # print(val)
+        val += data
 
 #with serial.Serial('/dev/ttyACM0', 9600, timeout=1) as ser:
 #    x = ser.read()          # read one byte

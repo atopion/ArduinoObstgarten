@@ -17,6 +17,38 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+    Here you can configure the setup of your node configuration:<br>
 
+    <div class="inputbasis">
+        <div class="inputgroup" *ngFor="let node of nodeList; let i = index">
+            <span>Node #{{i}}</span>
+            Name: <input [(ngModel)]="node.name" />
+            X: <input [(ngModel)]="node.x" />
+            Y: <input [(ngModel)]="node.y" />
+            <button (click)="del(i)"><ion-icon name="trash"></ion-icon></button>
+            <button (click)="add()" *ngIf="i == nodeList.length -1"><ion-icon name="add"></ion-icon></button>
+            <br>
+        </div>
+    </div>
+
+    <svg width="500" height="500">
+        <rect width="500" height="500" style="fill:rgb(240, 240, 240); stroke-width:1;stroke:rgb(0,0,0)" />
+        <rect *ngFor="let node of nodeList"
+              [attr.x]="node.x - 10"
+              [attr.y]="node.y - 10"
+              width="20"
+              height="20"
+              style="fill:rgb(100, 100, 100); stroke-width:1;stroke:rgb(0,0,0)">
+            <title>{{node.name}}</title>
+        </rect>
+        <text *ngFor="let node of nodeList"
+              text-anchor="middle" alignment-baseline="central"
+              [attr.x]="node.x"
+              [attr.y]="node.y - 25">
+            {{node.name}}
+        </text>
+    </svg>
+
+    <ion-button id="confirmbutton" (click)="confirm()">Confirm</ion-button>
 </ion-content>

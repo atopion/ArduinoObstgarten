@@ -5,12 +5,32 @@ import { Injectable } from '@angular/core';
 })
 export class LogoutService {
 
-    static username = "user";
+    username:string = "  ";
 
-    constructor() { }
+    constructor() {
+        this.get_usr();
+    }
+
+    async get_usr() {
+        const usr_url = window.location.protocol + "//" + window.location.hostname + ":3000" + "/usr";
+
+        const xhr = new XMLHttpRequest();
+        xhr.onloadend = () => {
+            if(xhr.readyState === 4) {
+                console.log("XHR: status: " + xhr.status);
+
+                if(xhr.status === 200)
+                    this.username = xhr.responseText;
+                else
+                    this.username = "USR";
+            }
+        };
+        xhr.open("GET", usr_url);
+        xhr.send();
+    }
 
     logout() {
-        const logout_url = "http://localhost:3000/logout";
+        const logout_url = window.location.protocol + "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "80") + "/logout";
 
         (async () => {
             const xhr = new XMLHttpRequest();

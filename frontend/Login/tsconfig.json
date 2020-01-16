@@ -5,17 +5,17 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "esnext",
+    "target": "es6",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "esnext",
+      "es6",
       "dom"
     ]
   },

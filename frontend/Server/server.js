@@ -5,19 +5,31 @@ const compression = require("compression");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
+const http = require("http");
+const https = require("https");
 const libcrypto = require("./libcrypto");
 const redis = require("./libredis");
 const app = express();
 const intern = express();
 const PORT = 3000;
+const SSL_PORT = 3043;
 const INTERN_PORT = 3030;
 const FOLDER_LOGIN = '/dist/Login/www';
 const FOLDER_PAGE = '/dist/ArduinoObstgarten/www';
+const SSL_FOLDER = '/cert';
+const SSL_ACTIVE = process.env.SSL_ACTIVE || "0";
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 var sessions = new Map();
+let credentials = null;
+/* SSL ? */
+if (SSL_ACTIVE === "1") {
+    const privateKey = fs.readFileSync(SSL_FOLDER + '/privkey1.pem', 'utf8');
+    const certificate = fs.readFileSync(SSL_FOLDER + '/fullchain1.pem', 'utf8');
+    credentials = { key: privateKey, cert: certificate };
+}
 /* Helpers */
 function isLoggedIn(req) {
     if (!req.cookies["SESSION"] || req.cookies["SESSION"] === "")
@@ -218,9 +230,25 @@ app.post('/logout', (req, res) => {
 app.options('/usr', (req, res) => {
     res.status(200).json({ P: libcrypto.P.toString(16), G: libcrypto.G.toString(16) });
 });
-app.listen(PORT, () => {
-    console.log("External Express server listening on http://localhost:" + PORT);
-});
+if (SSL_ACTIVE === "1" && credentials != null) {
+    const httpServer = http.createServer(app);
+    const httpsServer = https.createServer(credentials, app);
+    httpServer.listen(PORT);
+    httpsServer.listen(SSL_PORT);
+}
+else {
+    if (SSL_ACTIVE === "0") {
+        app.listen(PORT, () => {
+            console.log("External Express server listening on http://localhost:" + PORT);
+        });
+    }
+    else {
+        console.log("SSL Server failed to initialize certificates.");
+        app.listen(PORT, () => {
+            console.log("External Express server listening on http://localhost:" + PORT);
+        });
+    }
+}
 intern.get('/sessions', (req, res) => {
     res.status(200).send(sessionsAsString());
 });

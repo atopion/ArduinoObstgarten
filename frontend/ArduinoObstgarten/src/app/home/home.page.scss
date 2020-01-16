@@ -1,4 +1,54 @@
 .welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
+    max-height: 35vh;
+    overflow: hidden;
+}
+
+.inputbasis {
+    margin: 20px;
+
+    .inputgroup {
+        display: inline;
+
+        span {
+            margin-left: 5px;
+            margin-right: 20px;
+        }
+
+        input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        button {
+            margin-left: 20px;
+            margin-right: 5px;
+
+            width: 25px;
+            height: 25px;
+
+            background-color: var(--ion-color-primary);
+            border: 0 solid blue;
+            border-radius: 50%;
+        }
+    }
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+
+    margin: 20px 20px 50px;
+
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#confirmbutton {
+    position: absolute;
+
+    bottom: 20px;
+    left: 20px;
 }

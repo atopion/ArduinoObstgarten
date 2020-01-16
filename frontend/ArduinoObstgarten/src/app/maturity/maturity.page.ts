@@ -8,7 +8,7 @@ import {LogoutService} from "../logout.service";
 })
 export class MaturityPage implements OnInit {
 
-    username = LogoutService.username;
+    username = this.logout.username;
 
     mapLoading: boolean = true;
 
