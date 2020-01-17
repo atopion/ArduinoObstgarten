@@ -4,22 +4,20 @@
   "description": "",
   "main": "api.js",
   "scripts": {
-	"start": "nodemon api.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "headers": "^0.9.6",
     "influxdb-nodejs": "^3.1.0",
     "lodash": "^4.17.15",
     "on-headers": "^1.0.2",
-    "request": "^2.88.0",
-	"express": "^4.17.1"
+    "redis": "^2.8.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC"
 }
