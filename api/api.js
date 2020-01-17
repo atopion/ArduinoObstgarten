@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 
 // give redis DB time to establish
 setTimeout(function() {
-    const RedisConnector = require('../frontend/Server/libredis.js');
+    const RedisConnector = require('./libredis.js');    // this path is only valid for container in deployment. Does not fit git directory structure
     let redis_connector = new RedisConnector.RedisConnector();
 }, 10000);
 
