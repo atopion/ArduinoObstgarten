@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 
 // give redis DB time to establish
 setTimeout(function() {
-    const RedisConnector = require('../frontend/server/libredis.js');
+    const RedisConnector = require('../frontend/Server/libredis.js');
     let redis_connector = new RedisConnector.RedisConnector();
 }, 10000);
 
@@ -108,9 +108,9 @@ function postToDB(req, res, next) {
 
   
 function postNodes(req, res, next) {
-    for (dev in req.body) {
-        console.info(dev.key, dev.value)
-        redis_connector.set(dev.key,dev.value)
+    for (node in req.body) {
+        console.info(node.name, node.x, node.y)
+        redis_connector.set(node.name, (node.x, node.y))
     }
     res.status(200).send("Alles ok");
     next();
