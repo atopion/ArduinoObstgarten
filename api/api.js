@@ -10,6 +10,11 @@ const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+// give redis DB time to establish
+setTimeout(function() {
+    const RedisConnector = require('../frontend/server/libredis.js');
+    let redis_connector = new RedisConnector.RedisConnector();
+}, 10000);
 
 
 app.use(cookieParser());
@@ -100,6 +105,17 @@ function postToDB(req, res, next) {
 
     console.log("POST: ", post);
   };
+
+  
+function postNodes(req, res, next) {
+    for (dev in req.body) {
+        console.info(dev.key, dev.value)
+        redis_connector.set(dev.key,dev.value)
+    }
+    res.status(200).send("Alles ok");
+    next();
+    console.log("Posted Nodes");
+};
 
 
 app.get("/usr", (req, res) => {
@@ -207,9 +223,10 @@ app.get("/query", (req, res) => {
     });
 });
 
+
 app.use(bodyParser.json());
 app.use(postToDB);
-
+app.use("/nodes", postNodes);
 
 app.listen(3000, () => console.log('Server Started'))
 
