@@ -109,6 +109,7 @@ function postToDB(req, res, next) {
 
   
 function postNodes(req, res, next) {
+    console.info(req.body)
     for (node in req.body) {
         console.info(node.name, node.x, node.y)
         redis_connector.set(node.name, (node.x, node.y))
