@@ -115,11 +115,28 @@ function postToDB(req, res, next) {
   
 function postNodes(req, res, next) {
     
+    const cookie = req.cookies["SESSION"];  // session id
+
+    // request session ids
+    request("http://server:3030/sessions", function (error, response, body) {
+
+        sessions = JSON.parse(body);
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+
+        // Find username of matching session id
+        for (s in sessions) {
+            if (sessions[s].sessionID == cookie) {
+                req_username = sessions[s].username
+            }
+        }
+
     var post = req.body 
     console.info(post)
     for (node in post) {
         console.info(post[node].name, post[node].x, post[node].y)
-        redis_connector.set(post[node].name, (post[node].x, post[node].y))
+        redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
     }
     res.status(200).send("Alles ok");
     next();
