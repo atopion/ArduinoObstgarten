@@ -116,7 +116,7 @@ function postToDB(req, res, next) {
 function postNodes(req, res, next) {
     
     const cookie = req.cookies["SESSION"];  // session id
-
+    var req_username = "dummy";
     // request session ids
     request("http://server:3030/sessions", function (error, response, body) {
 
