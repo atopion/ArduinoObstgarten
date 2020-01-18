@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const router = express.Router();
 const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 require('dotenv/config');
@@ -17,6 +18,10 @@ setTimeout(function() {
     redis_connector = new RedisConnector.RedisConnector();
 }, 10000);
 
+router.use(function timeLog(req, res, next) {
+    console.log('Time: ', Date.now());
+    next();
+  });
 
 app.use(cookieParser());
 
@@ -109,10 +114,12 @@ function postToDB(req, res, next) {
 
   
 function postNodes(req, res, next) {
-    console.info(req.body)
-    for (node in req.body) {
-        console.info(node.name, node.x, node.y)
-        redis_connector.set(node.name, (node.x, node.y))
+    
+    var post = req.body 
+    console.info(post)
+    for (node in post) {
+        console.info(post[node].name, post[node].x, post[node].y)
+        redis_connector.set(post[node].name, (post[node].x, post[node].y))
     }
     res.status(200).send("Alles ok");
     next();
@@ -225,7 +232,7 @@ app.get("/query", (req, res) => {
     });
 });
 
-
+router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
 app.use("./", postToDB);
 app.use("/nodes", postNodes);
