@@ -131,7 +131,7 @@ function postNodes(req, res, next) {
                 req_username = sessions[s].username
             }
         }
-
+    });
     var post = req.body 
     console.info(post)
     for (node in post) {
