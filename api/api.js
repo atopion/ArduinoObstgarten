@@ -134,6 +134,8 @@ function postNodes(req, res, next) {
     });
     var post = req.body 
     console.info(post)
+    
+    // take coordinates and post to redis DB
     for (node in post) {
         console.info(post[node].name, post[node].x, post[node].y)
         redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
@@ -142,7 +144,7 @@ function postNodes(req, res, next) {
     next();
     console.log("Posted Nodes");
 
-    console.log("Content of redis db: ", redis_connector.get(req_username));
+    console.log("Content of redis db: ", redis_connector.get(req_username)); // get content to check if properly saved
 };
 
 
