@@ -141,6 +141,8 @@ function postNodes(req, res, next) {
     res.status(200).send("Alles ok");
     next();
     console.log("Posted Nodes");
+
+    console.log("Content of redis db: ", redis_connector.get(req_username));
 };
 
 
