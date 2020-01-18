@@ -232,6 +232,7 @@ app.get("/query", (req, res) => {
     });
 });
 
+router.get("/", function(req,res){})
 router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
 app.use("./", postToDB);
