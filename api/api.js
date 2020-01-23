@@ -101,6 +101,7 @@ const tagSchema = {
 
 function postToDB(req, res, next) {
     // search user belonging to device key
+    console.log("EXPORT: ", req);
     const device_key = req.body.key;
     var user_name = "dummy"
     for (u in users) {
@@ -149,26 +150,37 @@ function postNodes(req, res, next) {
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
 
+
+        let session_found = false;
         // Find username of matching session id
         for (s in sessions) {
             if (sessions[s].sessionID == cookie) {
                 req_username = sessions[s].username
+                session_found = true;
             }
         }
     });
-    var post = req.body 
-    console.info(post)
-    
-    // take coordinates and post to redis DB
-    for (node in post) {
-        console.info(post[node].name, post[node].x, post[node].y)
-        redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
+
+    if(req.method === "GET" && session_found === true) {
+        redis_connector.get(req_username).then(val => res.status(200).send(val));
     }
-    res.status(200).send("Alles ok");
+    else if(req.method === "POST" && session_found === true) {
+        var post = req.body 
+        console.info(post)
+        
+        // take coordinates and post to redis DB
+        for (node in post) {
+            console.info(post[node].name, post[node].x, post[node].y)
+            redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
+        }
+        res.status(200).send("Alles ok");
+    }
+    else
+        res.status(401).send("Forbidden");
+    
     next();
     console.log("Posted Nodes");
 
-    console.log("Content of redis db: ", redis_connector.get(req_username)); // get content to check if properly saved
 };
 
 
@@ -203,8 +215,6 @@ app.get("/usr", (req, res) => {
             res.status(200).send(req_username);
         else
             res.status(401).send("Forbidden");
-
-
     });
 });
 
@@ -277,6 +287,16 @@ app.get("/query", (req, res) => {
     });
 });
 
+router.get("/", function(req,res){})
+router.get("/nodes", function(req,res){})
+app.use(bodyParser.json());
+app.use("./", postToDB);
+app.use("/nodes", postNodes);
+
+//app.listen(3000, () => console.log('Server Started'))
+
+
+
 if (NO_SSL_ACTIVE === "1") {
     const httpServer = http.createServer(app);
     httpServer.listen(PORT);
@@ -297,13 +317,3 @@ else {
     console.log("External SSL express server failed to initialize certificates.");
     console.log("External SSL express server disabled.");
 }
-
-router.get("/", function(req,res){})
-router.get("/nodes", function(req,res){})
-app.use(bodyParser.json());
-app.use("./", postToDB);
-app.use("/nodes", postNodes);
-
-//app.listen(3000, () => console.log('Server Started'))
-
-
