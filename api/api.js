@@ -184,7 +184,8 @@ function postNodes(req, res, next) {
         console.info("Method", req.method);
 
         if(req.method === "GET" && session_found === true) {
-            redis_connector.get(req_username).then(val => res.status(200).send(val).then(next()));
+            redis_connector.get(req_username).then(val => res.status(200).send(val));
+            //next();
         
         }
         else if(req.method === "POST" && session_found === true) {
