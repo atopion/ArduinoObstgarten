@@ -12,6 +12,10 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const https = require('https');
+const cors = require("cors");
+
+app.use(cors());
+
 var redis_connector;
 
 const PORT = 3001;
