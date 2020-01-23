@@ -10,7 +10,7 @@ const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const http = require("http");
+const http = require('http');
 const https = require('https');
 var redis_connector;
 
@@ -284,7 +284,7 @@ else if (SSL_ACTIVE === "0") {
 if (SSL_ACTIVE === "1" && credentials != null) {
     const httpsServer = https.createServer(credentials, app);
     httpsServer.listen(SSL_PORT);
-    console.log("External SSL express server listening on https://localhost:" + PORT);
+    console.log("External SSL express server listening on https://localhost:" + SSL_PORT);
 }
 else if (SSL_ACTIVE === "0") {
     console.log("External SLL express server disabled.");
