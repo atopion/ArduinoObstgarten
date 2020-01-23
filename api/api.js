@@ -14,8 +14,8 @@ const http = require('http');
 const https = require('https');
 var redis_connector;
 
-const PORT = 3000;
-const SSL_PORT = 3001;
+const PORT = 3001;
+const SSL_PORT = 3000;
 
 const SSL_FOLDER = '/cert';
 
