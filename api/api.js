@@ -188,28 +188,29 @@ function postNodes(req, res, next) {
                 session_found = true;
             }
         }
-    });
-
-    console.info("Method", req.method);
-    console.info("Session found flag", session_found);
-
-    if(req.method === "GET" && session_found === true) {
-        redis_connector.get(req_username).then(val => res.status(200).send(val));
-    }
-    else if(req.method === "POST" && session_found === true) {
-        var post = req.body 
-        console.info(post)
-        
-        // take coordinates and post to redis DB
-        for (node in post) {
-            console.info(post[node].name, post[node].x, post[node].y)
-            redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
-        }
-        res.status(200).send("Alles ok");
-    }
-    else
-        res.status(401).send("Forbidden");
     
+
+        console.info("Method", req.method);
+        console.info("Session found flag", session_found);
+
+        if(req.method === "GET" && session_found === true) {
+            redis_connector.get(req_username).then(val => res.status(200).send(val));
+        }
+        else if(req.method === "POST" && session_found === true) {
+            var post = req.body 
+            console.info(post)
+            
+            // take coordinates and post to redis DB
+            for (node in post) {
+                console.info(post[node].name, post[node].x, post[node].y)
+                redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
+            }
+            res.status(200).send("Alles ok");
+        }
+        else
+            res.status(401).send("Forbidden");
+    });
+        
     next();
     //console.log("Posted Nodes");
 
