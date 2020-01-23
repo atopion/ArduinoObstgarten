@@ -197,8 +197,8 @@ function postNodes(req, res, next) {
             redis_connector.get(req_username).then(val => res.status(200).send(val));
         }
         else if(req.method === "POST" && session_found === true) {
-            var post = req.body 
-            console.info(post)
+            var post = JSON.parse(req.body);
+            console.info(post);
             
             // take coordinates and post to redis DB
             for (node in post) {
@@ -322,7 +322,7 @@ app.get("/query", (req, res) => {
 
 router.get("/values", function(req,res){})
 router.get("/nodes", function(req,res){})
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use("/values", postToDB);
 app.use("/nodes", postNodes);
 
