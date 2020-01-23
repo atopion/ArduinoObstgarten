@@ -10,6 +10,7 @@ const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const http = require("http");
 const https = require('https');
 var redis_connector;
 
