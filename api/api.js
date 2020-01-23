@@ -178,7 +178,7 @@ function postNodes(req, res, next) {
         for (s in sessions) {
             console.info(sessions[s]);
             console.info(sessions[s].sessionID);
-            if (sessions[s].sessionID == cookie) {
+            if (sessions[s].sessionID === cookie) {
                 req_username = sessions[s].username
                 session_found = true;
             }
