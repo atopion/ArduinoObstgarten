@@ -307,10 +307,10 @@ app.get("/query", (req, res) => {
     });
 });
 
-router.get("/", function(req,res){})
+router.get("/values", function(req,res){})
 router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
-app.use("/", postToDB);
+app.use("/values", postToDB);
 app.use("/nodes", postNodes);
 
 //app.listen(3000, () => console.log('Server Started'))
