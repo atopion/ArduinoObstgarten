@@ -173,32 +173,23 @@ function postNodes(req, res, next) {
 
         
         // Find username of matching session id
-        console.info(sessions);
-        console.info(typeof(sessions));
-        console.info(cookie);
-        console.info(typeof(cookie));
         for (s in sessions) {
-            console.info(sessions[s]);
-            console.info(sessions[s].sessionID);
-            console.info(typeof(sessions[s].sessionID));
-            console.info(sessions[s].username);
-            console.info(typeof(sessions[s].username));
+            //console.info(sessions[s].sessionID);
             if (sessions[s].sessionID == cookie) {
                 req_username = sessions[s].username
                 session_found = true;
             }
         }
     
-
         console.info("Method", req.method);
-        console.info("Session found flag", session_found);
 
         if(req.method === "GET" && session_found === true) {
             redis_connector.get(req_username).then(val => res.status(200).send(val));
+            next();
         }
         else if(req.method === "POST" && session_found === true) {
             var post = req.body;
-            console.info(post);
+            console.info("POST: ", post);
             
             // take coordinates and post to redis DB
             for (node in post) {
@@ -206,11 +197,13 @@ function postNodes(req, res, next) {
                 redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
             }
             res.status(200).send("Alles ok");
+            next();
         }
         else
             res.status(401).send("Forbidden");
-            
-        next();
+            next();
+
+        
     });
         
     
