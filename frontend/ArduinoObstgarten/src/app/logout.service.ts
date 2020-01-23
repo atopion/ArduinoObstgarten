@@ -12,7 +12,7 @@ export class LogoutService {
     }
 
     async get_usr() {
-        const usr_url = window.location.protocol + "//" + window.location.hostname + ":3000" + "/usr";
+        const usr_url = window.location.protocol + "//" + window.location.hostname + ":3000/usr";
 
         const xhr = new XMLHttpRequest();
         xhr.onloadend = () => {
@@ -30,7 +30,7 @@ export class LogoutService {
     }
 
     logout() {
-        const logout_url = window.location.protocol + "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "80") + "/logout";
+        const logout_url = window.location.protocol + "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "443") + "/logout";
 
         (async () => {
             const xhr = new XMLHttpRequest();

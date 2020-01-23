@@ -9,7 +9,7 @@ import * as sha from "js-sha256";
 })
 export class LoginPage implements OnInit {
 
-  postURL: string = window.location.protocol +  "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "80") + "/usr";
+  postURL: string = window.location.protocol +  "//" + window.location.hostname + ":" + (window.location.port ? window.location.port : "443") + "/usr";
 
   image: string = "https://source.unsplash.com/ygCOdo61k3E/800x450";
 

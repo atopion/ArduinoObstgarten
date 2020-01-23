@@ -18,6 +18,7 @@ const FOLDER_LOGIN = '/dist/Login/www';
 const FOLDER_PAGE = '/dist/ArduinoObstgarten/www';
 const SSL_FOLDER = '/cert';
 const SSL_ACTIVE = process.env.SSL_ACTIVE || "0";
+const NO_SSL_ACTIVE = process.env.NO_SSL_ACTIVE || "0";
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -230,24 +231,25 @@ app.post('/logout', (req, res) => {
 app.options('/usr', (req, res) => {
     res.status(200).json({ P: libcrypto.P.toString(16), G: libcrypto.G.toString(16) });
 });
-if (SSL_ACTIVE === "1" && credentials != null) {
+if (NO_SSL_ACTIVE === "1") {
     const httpServer = http.createServer(app);
-    const httpsServer = https.createServer(credentials, app);
     httpServer.listen(PORT);
+    console.log("External NO_SSL express server listening on http://localhost:" + PORT);
+}
+else if (SSL_ACTIVE === "0") {
+    console.log("External NO_SSL express server disabled.");
+}
+if (SSL_ACTIVE === "1" && credentials != null) {
+    const httpsServer = https.createServer(credentials, app);
     httpsServer.listen(SSL_PORT);
+    console.log("External SSL express server listening on https://localhost:" + SSL_PORT);
+}
+else if (SSL_ACTIVE === "0") {
+    console.log("External SLL express server disabled.");
 }
 else {
-    if (SSL_ACTIVE === "0") {
-        app.listen(PORT, () => {
-            console.log("External Express server listening on http://localhost:" + PORT);
-        });
-    }
-    else {
-        console.log("SSL Server failed to initialize certificates.");
-        app.listen(PORT, () => {
-            console.log("External Express server listening on http://localhost:" + PORT);
-        });
-    }
+    console.log("External SSL express server failed to initialize certificates.");
+    console.log("External SSL express server disabled.");
 }
 intern.get('/sessions', (req, res) => {
     res.status(200).send(sessionsAsString());
