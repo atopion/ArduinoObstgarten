@@ -209,9 +209,11 @@ function postNodes(req, res, next) {
         }
         else
             res.status(401).send("Forbidden");
+            
+        next();
     });
         
-    next();
+    
     //console.log("Posted Nodes");
 
 };
