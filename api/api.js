@@ -165,7 +165,7 @@ function postNodes(req, res, next) {
     // request session ids
     request("http://server:3030/sessions", function (error, response, body) {
 
-        sessions = JSON.parse(body);
+        sessions = body;
         console.log('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
@@ -199,7 +199,7 @@ function postNodes(req, res, next) {
         res.status(401).send("Forbidden");
     
     next();
-    console.log("Posted Nodes");
+    //console.log("Posted Nodes");
 
 };
 
