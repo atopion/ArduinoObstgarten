@@ -10,7 +10,16 @@ const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const https = require('https');
 var redis_connector;
+
+const PORT = 3000;
+
+const SSL_FOLDER = '/cert';
+
+const SSL_ACTIVE = process.env.SSL_ACTIVE || "0";
+const NO_SSL_ACTIVE = process.env.NO_SSL_ACTIVE || "0";
+
 
 // give redis DB time to establish
 setTimeout(function() {
@@ -44,6 +53,15 @@ setTimeout(function() {
     });
 }, 10000);
 
+
+let credentials = null;
+/* SSL ? */
+if(SSL_ACTIVE === "1") {
+    const privateKey  = fs.readFileSync(SSL_FOLDER + '/privkey1.pem', 'utf8');
+    const certificate = fs.readFileSync(SSL_FOLDER + '/fullchain1.pem', 'utf8');
+
+    credentials = {key: privateKey, cert: certificate};
+}
 
 
 const users = JSON.parse(fs.readFileSync("./users.json", "utf-8")); // read data of known users
@@ -253,12 +271,33 @@ app.get("/query", (req, res) => {
     });
 });
 
+if (NO_SSL_ACTIVE === "1") {
+    const httpServer = http.createServer(app);
+    httpServer.listen(PORT);
+    console.log("External NO_SSL express server listening on http://localhost:" + PORT);
+}
+else if (SSL_ACTIVE === "0") {
+    console.log("External NO_SSL express server disabled.");
+}
+if (SSL_ACTIVE === "1" && credentials != null) {
+    const httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(PORT);
+    console.log("External SSL express server listening on https://localhost:" + PORT);
+}
+else if (SSL_ACTIVE === "0") {
+    console.log("External SLL express server disabled.");
+}
+else {
+    console.log("External SSL express server failed to initialize certificates.");
+    console.log("External SSL express server disabled.");
+}
+
 router.get("/", function(req,res){})
 router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
 app.use("./", postToDB);
 app.use("/nodes", postNodes);
 
-app.listen(3000, () => console.log('Server Started'))
+//app.listen(3000, () => console.log('Server Started'))
 
 
