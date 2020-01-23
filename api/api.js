@@ -173,7 +173,11 @@ function postNodes(req, res, next) {
 
         
         // Find username of matching session id
+        console.info(sessions);
+        console.info(cookie);
         for (s in sessions) {
+            console.info(sessions[s]);
+            console.info(sessions[s].sessionID);
             if (sessions[s].sessionID == cookie) {
                 req_username = sessions[s].username
                 session_found = true;
