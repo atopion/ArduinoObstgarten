@@ -142,6 +142,7 @@ function postNodes(req, res, next) {
     
     const cookie = req.cookies["SESSION"];  // session id
     var req_username = "dummy";
+    let session_found = false;
     // request session ids
     request("http://server:3030/sessions", function (error, response, body) {
 
@@ -151,7 +152,7 @@ function postNodes(req, res, next) {
         console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
 
 
-        let session_found = false;
+        
         // Find username of matching session id
         for (s in sessions) {
             if (sessions[s].sessionID == cookie) {
@@ -290,7 +291,7 @@ app.get("/query", (req, res) => {
 router.get("/", function(req,res){})
 router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
-app.use("./", postToDB);
+app.use("/", postToDB);
 app.use("/nodes", postNodes);
 
 //app.listen(3000, () => console.log('Server Started'))
