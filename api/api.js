@@ -77,9 +77,9 @@ const tagSchema = {
     method: '*',
     // http stats code: 10x, 20x, 30x, 40x, 50x
     type: ['1', '2', '3', '4', '5'],
-  };
-  // define schema of DB entries
-  client.schema('http', {
+};
+// define schema of DB entries
+client.schema('http', {
     user: {
         type: String,
         required: true
@@ -96,12 +96,31 @@ const tagSchema = {
         type: Number,
         required: true
     }
-  }, tagSchema, { stripUnknown: true });
+}, tagSchema, { stripUnknown: true });
+
+client.schema('https', {
+    user: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    },
+    sensor: {
+        type: Number,
+        required: true
+    },
+    value: {
+        type: Number,
+        required: true
+    }
+}, tagSchema, { stripUnknown: true });
 
 
 function postToDB(req, res, next) {
     // search user belonging to device key
-    console.log("EXPORT: ", req);
+    //console.log("EXPORT: ", req);
     const device_key = req.body.key;
     var user_name = "dummy"
     for (u in users) {
