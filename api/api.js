@@ -190,6 +190,9 @@ function postNodes(req, res, next) {
         }
     });
 
+    console.info("Method", req.method);
+    console.info("Session found flag", session_found);
+
     if(req.method === "GET" && session_found === true) {
         redis_connector.get(req_username).then(val => res.status(200).send(val));
     }
