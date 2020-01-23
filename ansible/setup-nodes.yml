@@ -100,3 +100,20 @@
         dest: /etc/dhcpcd.conf
         line: denyinterfaces bat0
 
+
+    - name: Install serial program on node
+      git:
+        repo: https://github.com/atopion/ArduinoObstgarten.git
+        dest: /home/pi/ArduinoObstgarten
+
+    - name: Install repository dependencies
+      pip:
+        name:
+          - serial
+          - requests
+          - time
+      ignore_errors: true
+
+    - name: Start python script
+      become: true
+      shell: nohup python /home/pi/ArduinoObstgarten/serial_read.py </dev/null >/dev/null 2>&1 &
