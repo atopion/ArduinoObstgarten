@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const router = express.Router();
 const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 require('dotenv/config');
@@ -9,8 +10,18 @@ const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+var redis_connector;
 
+// give redis DB time to establish
+setTimeout(function() {
+    const RedisConnector = require('./libredis.js');    // this path is only valid for container in deployment. Does not fit git directory structure
+    redis_connector = new RedisConnector.RedisConnector();
+}, 10000);
 
+router.use(function timeLog(req, res, next) {
+    console.log('Time: ', Date.now());
+    next();
+  });
 
 app.use(cookieParser());
 
@@ -100,6 +111,41 @@ function postToDB(req, res, next) {
 
     console.log("POST: ", post);
   };
+
+  
+function postNodes(req, res, next) {
+    
+    const cookie = req.cookies["SESSION"];  // session id
+    var req_username = "dummy";
+    // request session ids
+    request("http://server:3030/sessions", function (error, response, body) {
+
+        sessions = JSON.parse(body);
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+
+        // Find username of matching session id
+        for (s in sessions) {
+            if (sessions[s].sessionID == cookie) {
+                req_username = sessions[s].username
+            }
+        }
+    });
+    var post = req.body 
+    console.info(post)
+    
+    // take coordinates and post to redis DB
+    for (node in post) {
+        console.info(post[node].name, post[node].x, post[node].y)
+        redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
+    }
+    res.status(200).send("Alles ok");
+    next();
+    console.log("Posted Nodes");
+
+    console.log("Content of redis db: ", redis_connector.get(req_username)); // get content to check if properly saved
+};
 
 
 app.get("/usr", (req, res) => {
@@ -207,9 +253,11 @@ app.get("/query", (req, res) => {
     });
 });
 
+router.get("/", function(req,res){})
+router.get("/nodes", function(req,res){})
 app.use(bodyParser.json());
-app.use(postToDB);
-
+app.use("./", postToDB);
+app.use("/nodes", postNodes);
 
 app.listen(3000, () => console.log('Server Started'))
 

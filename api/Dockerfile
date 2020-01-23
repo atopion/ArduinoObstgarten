@@ -1,6 +1,7 @@
 FROM node:lts-alpine
 MAINTAINER r.wetzelt@yahoo.de
-WORKDIR /dist
+WORKDIR /dist/
+COPY ./Server/libredis.js /dist/
 COPY ./*.json ./*.js /dist/
 
 RUN npm install

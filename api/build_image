@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ ! -d "./Server/" ] 
+then
+    echo "Directory ./Server/ doesn't exist, it will be created."
+    mkdir ./Server
+fi
+cp ../frontend/Server/libredis.js ./Server/
+
+sudo docker image build . -t rockthedock/arduino-api
