@@ -157,7 +157,7 @@ function postToDB(req, res, next) {
   };
 
   
-function postNodes(req, res, next) {
+function postNodes(req, res) {
     
     const cookie = req.cookies["SESSION"];  // session id
     var req_username = "dummy";
@@ -185,8 +185,7 @@ function postNodes(req, res, next) {
         const method = req.method;
 
         if(method === "GET" && session_found === true) {
-            redis_connector.get(req_username).then(val => res.status(200).send(val)).then(next());
-            //next();
+            redis_connector.get(req_username).then(val => res.status(200).send(val));
         
         }
         else if(method === "POST" && session_found === true) {
@@ -201,11 +200,9 @@ function postNodes(req, res, next) {
             }
             */
             res.status(200).send("Alles ok");
-            next();
         }
         else {
             res.status(401).send("Forbidden");
-            next();
         }
 
         
