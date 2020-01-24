@@ -201,9 +201,10 @@ function postNodes(req, res, next) {
             res.status(200).send("Alles ok");
             next();
         }
-        else
+        else {
             res.status(401).send("Forbidden");
             next();
+        }
 
         
     });
