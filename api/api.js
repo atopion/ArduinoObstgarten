@@ -132,6 +132,7 @@ function postToDB(req, res, next) {
     }
     if (user_name == "dummy") {
         console.log("Could not find passed device key");
+        res.status(404).send("Device key not found");
         return;
     }
 
@@ -142,7 +143,6 @@ function postToDB(req, res, next) {
         sensor: req.body.sensor,
         value: req.body.value
     };
-    console.log("POST: ", post);
 
     // make entry in DB
     client.write(user_name)
