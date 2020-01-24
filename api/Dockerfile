@@ -5,7 +5,7 @@ WORKDIR /dist/
 COPY ./Server/libredis.js /dist/
 COPY ./*.json ./*.js /dist/
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+#RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
 RUN npm install
 
@@ -16,12 +16,12 @@ RUN npm install
 #apt-get clean && \
 #rm -rf /var/lib/apt/lists/*
 
-RUN apk add --update \
-	python3.7 \
-	python3-pip \
-	&& rm -rf /var/cache/apk/*
+#RUN apk add --update \
+#	python3.7 \
+#	python3-pip \
+#	&& rm -rf /var/cache/apk/*
 
-RUN pip3 install pandas, seaborn, json, matplotlib, scipy
+#RUN pip3 install pandas, seaborn, json, matplotlib, scipy
 
 EXPOSE 3000
 EXPOSE 3001
