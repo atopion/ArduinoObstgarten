@@ -5,6 +5,8 @@ WORKDIR /dist/
 COPY ./Server/libredis.js /dist/
 COPY ./*.json ./*.js /dist/
 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
 RUN npm install
 
 #RUN apt-get update && apt-get install -y --no-install-recommends \
