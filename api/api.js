@@ -192,12 +192,14 @@ function postNodes(req, res, next) {
         else if(method === "POST" && session_found === true) {
             var post = req.body;
             console.info("POST: ", post);
-            
+            redis_connector.set(req_username, post);
             // take coordinates and post to redis DB
+            /*
             for (node in post) {
                 console.info(post[node].name, post[node].x, post[node].y)
                 redis_connector.set(req_username, (post[node].name, post[node].x, post[node].y))
             }
+            */
             res.status(200).send("Alles ok");
             next();
         }
