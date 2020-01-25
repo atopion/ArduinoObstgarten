@@ -28,79 +28,68 @@ def create_heatmap(json_file):
         y_points.append(element["y"])
     print(x_points, y_points)
     data_points = np.array(points)
-    for x in range(0, 10, 1):
-        for y in range(0, 10, 1):
+
+    for x in range(0, max(set(x_points))+1, 1):
+        for y in range(0, max(set(y_points))+1, 1):
             b = False
             for element in json_data['data']:
+                print(element["x"], "x:", x, element["y"], "y:", y)
                 if element["x"] == x and element["y"] == y:
+                    print(element["x"], element["y"])
                     df.set_value(y, x, element["val"])
                     b = True
             if not b:
                 df.set_value(y, x, None)
     values = df.to_numpy()
+    print(df)
     z = []
     for i in range(0, len(values), 1):
         print(values[i][~np.isnan(values[i])])
         z.append(values[i][~np.isnan(values[i])])
 
     compact_df = rearrange_data(df)
-    compact_df = compact_df.interpolate()
-    print(compact_df)
-    compact_df.fillna(0)
+    compact_df = interpol_data(compact_df)
+    print(compact_df.to_string())
     plt.imshow(compact_df.to_numpy(), cmap='YlGn')
     plt.colorbar()
     plt.show()
-    plt.savefig('output.png')
-
-    # interpol_data(compact_df, x_points, y_points, z, data_points)
-
-    # print(f)
-    # print(df.to_numpy().shape)
-    # plt.imshow(f, cmap='YlGn')
-    # plt.colorbar()
-    # plt.show()
-    # # sns.pairplot(df)
-    # plt.savefig('output.png')
+    plt.savefig(json_file + '.png')
 
 
 def rearrange_data(df):
     """
     rearranges given dataframe by removing nan rows and columns and adding one
     :param df: dataframe to delete nans from
-    :return: returns same dataframe without nan rows and columns apart from nans surrounding datapoints
+    :return: returns same dataframe with square dimensions made by nan rows and surrounding rows with zeros
     """
-    df = df.dropna(axis=1, how="all")
-    df = df.dropna(axis=0, how="all")
-    # df[df.columns[len(df.columns)-1]+1] = np.nan
-    # df = df.append(pd.Series(), ignore_index=True)
+
     if df.shape[0] < df.shape[1]:
         for i in range(df.shape[1]-df.shape[0]):
             df = df.append(pd.Series(), ignore_index=True)
     elif df.shape[0] > df.shape[1]:
         for i in range(df.shape[0]-df.shape[1]):
             df[df.columns[len(df.columns)-1]+1] = np.nan
+    df.loc[:, len(df.columns)] = 0
+    df.loc[len(df)] = 0
     print(df)
     return df
 
 
-def interpol_data(df, x_axis, y_axis, z, points):
+def interpol_data(df):
     """
     interpolate data in given dataframe
     :param df: dataframe containing floats or nans
     :return: datafrane with interpolated values and no nans
     """
-    xx, yy = np.meshgrid(x_axis, y_axis)
-    print(xx)
-    print(yy)
-    z = df.to_numpy()
-    print(z)
-    print(y_axis)
-    print(len(y_axis), len(z))
-    data = interpolate.interp1d(y_axis, z, kind='linear')
-    # data = interpolate.interp1d(x_axis, y_axis, z, kind='linear')
-    df_interpol = pd.DataFrame(data=data)
-    print(df_interpol)
-    return df_interpol
+    df = df.interpolate(axis=1, limit_direction='both', kind='linear')
+    print(df.to_string())
+    df.replace(0, np.nan, inplace=True)
+    df.loc[df.shape[1]] = 0
+    df = df.interpolate(axis=0, kind='linear')
+    print(df.to_string())
+    df = df.drop(columns=len(df.columns) - 1)
+    df = df.drop([df.shape[0] - 2, df.shape[0] - 1])
+    return df
     # grid = griddata(df.to_numpy(), values, (grid_x, grid_y), method='linear')
     # df.interpolate(method="akima", limit_direction="both", inplace=True)
     # print(grid)
@@ -111,4 +100,5 @@ if __name__ == '__main__':
         filename = sys.argv[1]
         create_heatmap(filename)
     else:
+        # create_heatmap("user1_dat.json")
         print("too few arguments")
