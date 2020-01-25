@@ -27,7 +27,6 @@ def create_heatmap(json_file):
         x_points.append(element["x"])
         y_points.append(element["y"])
     print(x_points, y_points)
-    data_points = np.array(points)
 
     for x in range(0, max(set(x_points))+1, 1):
         for y in range(0, max(set(y_points))+1, 1):
@@ -40,12 +39,6 @@ def create_heatmap(json_file):
                     b = True
             if not b:
                 df.set_value(y, x, None)
-    values = df.to_numpy()
-    print(df)
-    z = []
-    for i in range(0, len(values), 1):
-        print(values[i][~np.isnan(values[i])])
-        z.append(values[i][~np.isnan(values[i])])
 
     compact_df = rearrange_data(df)
     compact_df = interpol_data(compact_df)
@@ -90,9 +83,6 @@ def interpol_data(df):
     df = df.drop(columns=len(df.columns) - 1)
     df = df.drop([df.shape[0] - 2, df.shape[0] - 1])
     return df
-    # grid = griddata(df.to_numpy(), values, (grid_x, grid_y), method='linear')
-    # df.interpolate(method="akima", limit_direction="both", inplace=True)
-    # print(grid)
 
 
 if __name__ == '__main__':
