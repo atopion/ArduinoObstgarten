@@ -16,12 +16,11 @@ RUN npm install
 #apt-get clean && \
 #rm -rf /var/lib/apt/lists/*
 
-#RUN apk add --update \
-#	python3.7 \
-#	python3-pip \
-#	&& rm -rf /var/cache/apk/*
+RUN apk update \ 
+	&& apk add python3 py-pip \
+	&& rm -rf /var/cache/apk/* \
 
-#RUN pip3 install pandas, seaborn, json, matplotlib, scipy
+RUN pip install pandas, seaborn, json, matplotlib, scipy
 
 EXPOSE 3000
 EXPOSE 3001
