@@ -15,6 +15,7 @@
     "influxdb-nodejs": "^3.1.0",
     "lodash": "^4.17.15",
     "on-headers": "^1.0.2",
+    "path": "^0.12.7",
     "redis": "^2.8.0",
     "request": "^2.88.0"
   },
