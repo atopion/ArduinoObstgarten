@@ -13,6 +13,12 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const https = require('https');
 const cors = require("cors");
+const path = require('path')
+const {spawn} = require('child_process')
+/**
+ * Run python script, pass in `-u` to not buffer console output 
+ * @return {ChildProcess}
+ */
 
 app.use(cors());
 
@@ -213,6 +219,12 @@ function postNodes(req, res) {
 
 };
 
+function createMap(data){
+    return spawn('python', [ 
+      path.join("./", 'test_script.py'),
+      data
+    ]);
+  }
 
 app.get("/usr", (req, res) => {
     // check if request, cookies and session id are provided
@@ -296,7 +308,9 @@ app.get("/query", (req, res) => {
                 output = JSON.stringify(val, null, 4);
                 console.info(output)
                 // write data to file
-                fs.writeFileSync('./' + req_username + '_forecast.dat', output)   
+                const filename = './' + req_username + '_forecast.dat'
+                fs.writeFileSync(filename, output)
+                //createMap(filename)   
             })
             .catch(console.error); 
         }
@@ -310,7 +324,9 @@ app.get("/query", (req, res) => {
                 output = JSON.stringify(val, null, 4);
                 console.info(output)
                 // write data to file
-                fs.writeFileSync('./' + req_username + '_' + sensor_type + '.dat', output)
+                const filename = './' + req_username + '_' + sensor_type + '.dat'
+                fs.writeFileSync(filename, output)
+                //createMap(filename)
             })
             .catch(console.error);
         }
