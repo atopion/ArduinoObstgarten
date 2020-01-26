@@ -4,9 +4,9 @@ const router = express.Router();
 const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 require('dotenv/config');
-const path = JSON.parse(fs.readFileSync('./DB_path.json'))
-console.log(path.DB_path)
-const client = new Influx(path.DB_path);
+const DB_path = JSON.parse(fs.readFileSync('./DB_path.json'))
+console.log(DB_path.DB_path)
+const client = new Influx(DB_path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
