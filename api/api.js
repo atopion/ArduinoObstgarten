@@ -4,16 +4,16 @@ const router = express.Router();
 const Influx = require('influxdb-nodejs');
 const fs = require('fs');
 require('dotenv/config');
-const DB_path = JSON.parse(fs.readFileSync('./DB_path.json'))
-console.log(DB_path.DB_path)
-const client = new Influx(DB_path.DB_path);
+const path = JSON.parse(fs.readFileSync('./DB_path.json'))
+console.log(path.DB_path)
+const client = new Influx(path.DB_path);
 const request = require("request");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const https = require('https');
 const cors = require("cors");
-const path = require('path')
+const use_path = require('path')
 const {spawn} = require('child_process')
 /**
  * Run python script, pass in `-u` to not buffer console output 
@@ -221,7 +221,7 @@ function postNodes(req, res) {
 
 function createMap(data){
     return spawn('python', [ 
-      path.join("./", 'heatmapper.py'),
+      use_path.join("./", 'heatmapper.py'),
       data
     ]);
   }
