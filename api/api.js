@@ -221,7 +221,7 @@ function postNodes(req, res) {
 
 function createMap(data){
     return spawn('python', [ 
-      path.join("./", 'test_script.py'),
+      path.join("./", 'heatmapper.py'),
       data
     ]);
   }
