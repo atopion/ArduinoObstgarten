@@ -369,6 +369,10 @@ app.get("/query", (req, res) => {
             var nodes;
             var json_output;
 
+            await Promise.all([client.query(req_username).where('type', sensor_type), redis_connector.get(req_username)])
+            .then(results => console.log(results))
+
+            /*
             client.query(req_username)
         
             .where('type', sensor_type)
@@ -385,7 +389,7 @@ app.get("/query", (req, res) => {
                 const filename = './' + req_username + '_' + sensor_type + '.json'
                 fs.writeFileSync(filename, json_output)
             });
-            
+            */
             
         }
     });
