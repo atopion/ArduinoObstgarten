@@ -373,19 +373,17 @@ app.get("/query", (req, res) => {
         
             .where('type', sensor_type)
             .then(val => {
+                nodes = redis_connector.get(req_username)
                 output = JSON.stringify(val, null, 4);
                 console.info("Output: ", output)
-                console.log(nodes = redis_connector.get(req_username))
-            }).then(val => {
-                console.info(nodes)
-                json_output = provideOutput(JSON.parse(output), nodes, req_username)
+            })
+            .then(positions => {
+                json_output = provideOutput(JSON.parse(output), positions, req_username)
                 console.info(json_output)
-                
-
+                console.info(nodes)
                 // write data to file
                 const filename = './' + req_username + '_' + sensor_type + '.json'
                 fs.writeFileSync(filename, json_output)
-            .catch(console.error);
             });
             
             
