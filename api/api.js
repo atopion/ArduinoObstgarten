@@ -366,15 +366,17 @@ app.get("/query", (req, res) => {
         
         // specified query about sensor type
         else {
+            var nodes;
+            var json_output;
+
             client.query(req_username)
-            
+        
             .where('type', sensor_type)
             .then(val => {
                 output = JSON.stringify(val, null, 4);
                 console.info("Output: ", output)
-                
-            }).then(
-                nodes = redis_connector.get(req_username))
+                nodes = redis_connector.get(req_username)
+            }).then(nodes => {
                 json_output = provideOutput(output, nodes, req_username)
                 console.info(json_output)
                 console.info(nodes)
@@ -383,6 +385,9 @@ app.get("/query", (req, res) => {
                 const filename = './' + req_username + '_' + sensor_type + '.json'
                 fs.writeFileSync(filename, json_output)
             .catch(console.error);
+            });
+            
+            
         }
     });
 });
