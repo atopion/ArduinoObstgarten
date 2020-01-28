@@ -307,6 +307,8 @@ app.get("/query", (req, res) => {
         return;
     }
 
+    var output;
+
     console.log("Session key of requester:", req.cookies["SESSION"]);
     const cookie = req.cookies["SESSION"];  // session id
     const sensor_type = req.query.type; //sensor type (sunlight,wind,humidity)
@@ -364,14 +366,12 @@ app.get("/query", (req, res) => {
         
         // specified query about sensor type
         else {
-            var output;
             client.query(req_username)
             
             .where('type', sensor_type)
-            
             .then(val => {
                 output = JSON.stringify(val, null, 4);
-                console.info(output)
+                console.info("Output: ", output)
                 
             }).then(
                 nodes = redis_connector.get(req_username))
@@ -382,7 +382,7 @@ app.get("/query", (req, res) => {
                 // write data to file
                 const filename = './' + req_username + '_' + sensor_type + '.json'
                 fs.writeFileSync(filename, json_output)
-                .catch(console.error);
+            .catch(console.error);
         }
     });
 });
