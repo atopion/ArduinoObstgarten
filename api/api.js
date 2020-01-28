@@ -375,8 +375,8 @@ app.get("/query", (req, res) => {
             .then(val => {
                 output = JSON.stringify(val, null, 4);
                 console.info("Output: ", output)
-                redis_connector.get(req_username)
-            }).then(nodes => {
+                console.log(nodes = redis_connector.get(req_username))
+            }).then(val => {
                 console.info(nodes)
                 json_output = provideOutput(JSON.parse(output), nodes, req_username)
                 console.info(json_output)
