@@ -364,14 +364,15 @@ app.get("/query", (req, res) => {
         
         // specified query about sensor type
         else {
+            var output;
             client.query(req_username)
+            
             .where('type', sensor_type)
             
             .then(val => {
                 output = JSON.stringify(val, null, 4);
                 console.info(output)
-                // write data to file
-                //createMap(filename)
+                
             }).then(
                 nodes = redis_connector.get(req_username))
                 json_output = provideOutput(output, nodes, req_username)
