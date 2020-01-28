@@ -260,6 +260,44 @@ app.get("/usr", (req, res) => {
     });
 });
 
+function provideOutput(output, nodes, username) {
+    sensor_number = output["results"][0]["series"][0]["values"][0][1]
+    value = output["results"][0]["series"][0]["values"][0][4]
+
+    var i = output["results"][0]["series"][0]["values"].length -1;
+    var output_len = output["results"][0]["series"][0]["values"].length;
+
+    data = new Array();
+    while (i >= output_len-nodes.length) {
+        sensor_number = output["results"][0]["series"][0]["values"][i][1]
+        value = output["results"][0]["series"][0]["values"][i][4]
+        var x = -1;
+        var y = -1;
+        for (j in nodes) {
+            console.info("Node in iteration: ", nodes[j]["name"])
+            console.info("Real Node: Node"+sensor_number)
+            if (nodes[j]["name"] === "Node"+sensor_number) {
+                x = nodes[j]["x"]
+                y = nodes[j]["y"]
+                data.push({"x": x, "y": y, "val": value})
+                console.info(x)
+                console.info(y)
+                break;
+            }
+        }
+        i = i-1;
+    }
+    var currentDate = new Date();
+    var minutes = currentDate.getMinutes();
+    var hours = currentDate.getHours();
+    var date = currentDate.getDate();
+    var month = currentDate.getMonth(); //Be careful! January is 0 not 1
+    var year = currentDate.getFullYear();
+    var timestamp = year +"-"+ (month+1) +"-"+ date +" "+ hours + ":" + minutes;
+
+    json_res = {"time": timestamp, "user": username, "data": data}
+    return json_res;
+}
 
 app.get("/query", (req, res) => {
 
@@ -301,7 +339,14 @@ app.get("/query", (req, res) => {
         }
 
         console.log("Username belonging to Session key:", req_username);
-        if (sensor_type == "forecast") {
+        if (sensor_type === "forecast") {
+
+            redis_connector.get(req_username)
+
+            .then(nodes => {
+                output = JSON.parse(nodes)
+                console.info("Nodes: ", output)
+            })
             client.query(req_username)
             // request all entries
             .then(val => {
@@ -311,7 +356,9 @@ app.get("/query", (req, res) => {
                 const filename = './' + req_username + '_forecast.dat'
                 fs.writeFileSync(filename, output)
                 //createMap(filename)   
-            })
+            }).then(
+                    nodes = redis_connector.get(req_username))
+                    console.info(nodes)
             .catch(console.error); 
         }
         
@@ -324,11 +371,17 @@ app.get("/query", (req, res) => {
                 output = JSON.stringify(val, null, 4);
                 console.info(output)
                 // write data to file
-                const filename = './' + req_username + '_' + sensor_type + '.dat'
-                fs.writeFileSync(filename, output)
                 //createMap(filename)
-            })
-            .catch(console.error);
+            }).then(
+                nodes = redis_connector.get(req_username))
+                json_output = provideOutput(output, nodes, req_username)
+                console.info(json_output)
+                console.info(nodes)
+
+                // write data to file
+                const filename = './' + req_username + '_' + sensor_type + '.json'
+                fs.writeFileSync(filename, json_output)
+                .catch(console.error);
         }
     });
 });
