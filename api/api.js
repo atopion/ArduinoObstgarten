@@ -375,15 +375,13 @@ app.get("/query", (req, res) => {
             .then(val => {
                 output = JSON.stringify(val, null, 4);
                 console.info("Output: ", output)
-                nodes = redis_connector.get(req_username)
-                .then(positions => {
-                console.info(nodes)
-                json_output = provideOutput(JSON.parse(output), positions, req_username)
-                console.info(json_output)
-                // write data to file
-                const filename = './' + req_username + '_' + sensor_type + '.json'
-                fs.writeFileSync(filename, json_output)
-                })
+                nodes = redis_connector.get(req_username).then(positions => {
+                    json_output = provideOutput(JSON.parse(output), positions, req_username)
+                    console.info(json_output)
+                    // write data to file
+                    const filename = './' + req_username + '_' + sensor_type + '.json'
+                    fs.writeFileSync(filename, json_output)
+                });
             });
             
             
