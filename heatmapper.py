@@ -6,8 +6,16 @@ from matplotlib import pyplot as plt
 import numpy as np
 import sys
 
+def create_forecast():
+
+    return df
 
 def create_heatmap(json_file):
+    """
+    create dataframe from json data file and fill non-existing values with nan, create heatmap with seaborn from given dataframe and save it as png file
+    :param json_file: json file containing a string with x,y coordinates of the nodes and values for the sensor
+    :return: -
+    """
 
     with open(json_file) as f:
         json_data = json.load(f)
@@ -24,7 +32,7 @@ def create_heatmap(json_file):
         x_points.append(element["x"])
         y_points.append(element["y"])
 
-    # create and fill dataframe
+    # create and fill dataframe from json
     df = pd.DataFrame()
     for x in range(0, max(set(x_points))+1, 1):
         for y in range(0, max(set(y_points))+1, 1):
@@ -39,19 +47,20 @@ def create_heatmap(json_file):
     compact_df = rearrange_data(df)
     compact_df = interpol_data(compact_df)
     # create figure and save to png file
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5, 5))
     im = ax.imshow(compact_df.to_numpy(), cmap='YlGn')
     ax.set_title(usr + ' ' + time)
     cbar = fig.colorbar(im, ax=ax)
     # plt.show()
     fig.savefig(json_file + '.png')
+    return df
 
 
 def rearrange_data(df):
     """
-    rearranges given dataframe by removing nan rows and columns and adding one
-    :param df: dataframe to delete nans from
-    :return: returns same dataframe with square dimensions made by nan rows and surrounding rows with zeros
+    rearranges given dataframe by adding nan rows until columns and indexes are same
+    :param df: dataframe with values and nans of any dimension
+    :return: returns same dataframe with square dimensions containing two surrounding rows with nans and zeros
     """
 
     if df.shape[0] < df.shape[1]:
@@ -115,15 +124,22 @@ def interpol_data(df):
     df.loc[df.shape[0]-1] = 0
     df.loc[0] = 0
     df = df.interpolate(axis=0, limit_direction='both', kind='linear')
+    # drop nan and zero rows needed for interpolation
     df = df.drop(columns=[0, 1, len(df.columns) - 2, len(df.columns) - 1])
     df = df.drop([0, 1, df.shape[0] - 2, df.shape[0] - 1])
     return df
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
+    if len(sys.argv) == 2:
+        print(sys.argv[0])
         filename = sys.argv[1]
         create_heatmap(filename)
+    # elif len(sys.argv) == 3:
+    #     filename = sys.argv[1]
+    #     print("creating forecast")
+    #     if sys.argv[2] == "forecast":
+    #         create_forecast(filename)
     else:
         print("too few arguments, using dummy")
-        create_heatmap("user3_dat.json")
+        create_heatmap("user4_dat.json")
