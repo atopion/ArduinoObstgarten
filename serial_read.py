@@ -22,7 +22,7 @@ print(serial.name)
 val = ""
 
 packet_sunlight = { 'key': nodekey, 'type': 'sunlight', 'sensor': 0, 'value': 0.0 }
-packet_humidity = { 'key': nodekey, 'type': 'sunlight', 'sensor': 0, 'value': 0.0 }
+packet_humidity = { 'key': nodekey, 'type': 'humidity', 'sensor': 0, 'value': 0.0 }
 
 while True:
     data = serial.read().decode()
@@ -47,8 +47,8 @@ while True:
 
     elif data == "e":
 
-        requests.post("https://bat-obstgarten.de:3000", json=packet_sunlight)
-        requests.post("https://bat-obstgarten.de:3000", json=packet_humidity)
+        requests.post("https://www.bat-obstgarten.de:3000/values", json=packet_sunlight)
+        requests.post("https://www.bat-obstgarten.de:3000/values", json=packet_humidity)
 
         time.sleep(sleeptime)
         sleepcounter += 1
