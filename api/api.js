@@ -261,6 +261,8 @@ app.get("/usr", (req, res) => {
 });
 
 function provideOutput(output, nodes, username) {
+    console.info(output)
+    console.info(nodes)
     sensor_number = output["results"][0]["series"][0]["values"][0][1]
     value = output["results"][0]["series"][0]["values"][0][4]
 
@@ -274,14 +276,14 @@ function provideOutput(output, nodes, username) {
         var x = -1;
         var y = -1;
         for (j in nodes) {
-            console.info("Node in iteration: ", nodes[j]["name"])
-            console.info("Real Node: Node"+sensor_number)
+            //console.info("Node in iteration: ", nodes[j]["name"])
+            //console.info("Real Node: Node"+sensor_number)
             if (nodes[j]["name"] === "Node"+sensor_number) {
                 x = nodes[j]["x"]
                 y = nodes[j]["y"]
                 data.push({"x": x, "y": y, "val": value})
-                console.info(x)
-                console.info(y)
+                //console.info(x)
+                //console.info(y)
                 break;
             }
         }
@@ -377,7 +379,7 @@ app.get("/query", (req, res) => {
                 console.info("Output: ", output)
                 nodes = redis_connector.get(req_username).then(positions => {
                     setTimeout(function() {
-                        json_output = provideOutput(JSON.parse(output), positions, req_username)
+                        json_output = provideOutput(JSON.parse(output), nodes, req_username)
                         console.info(json_output)
                         // write data to file
                         const filename = './' + req_username + '_' + sensor_type + '.json'
