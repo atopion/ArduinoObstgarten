@@ -4,14 +4,14 @@ if [ ! -d "./Server/" ]
 then
     echo "Directory ./Server/ doesn't exist, it will be created."
     mkdir ./Server
-if [ ! -d "./HeatMap/" ] 
+if [ ! -d "./heatmap_creation/" ] 
 then
-    echo "Directory ./HeatMap/ doesn't exist, it will be created."
-    mkdir ./HeatMap
+    echo "Directory ./heatmap_creation/ doesn't exist, it will be created."
+    mkdir ./heatmap_creation
 fi
 cp ../frontend/Server/libredis.js ./Server/
-cp ../heatmap_creation/heatmapper.py ./HeatMap/
-cp ../heatmap_creation/user2_light.json ./HeatMap/
-cp ../heatmap_creation/user2_humidity.json ./HeatMap/
+cp ../heatmap_creation/heatmapper.py ./heatmap_creation/
+cp ../heatmap_creation/user2_light.json ./heatmap_creation/
+cp ../heatmap_creation/user2_humidity.json ./heatmap_creation/
 
 sudo docker image build . -t rockthedock/arduino-api
