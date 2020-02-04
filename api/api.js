@@ -37,7 +37,7 @@ const SSL_FOLDER = '/cert';
 const SSL_ACTIVE = process.env.SSL_ACTIVE || "0";
 const NO_SSL_ACTIVE = process.env.NO_SSL_ACTIVE || "0";
 
-const SESSION_SERVER = "localhost";
+const SESSION_SERVER = "server";
 
 
 // give redis DB time to establish
