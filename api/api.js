@@ -307,7 +307,7 @@ function provideOutput(output, nodes, username) {
                 if(n.name === "Node " + sensor_number) {
                     x = n.x;
                     y = n.y;
-                    data.push({"x": x, "y": y, "val": value});
+                    data.push({"x": x, "y": y, "val": val});
                     break;
                 }
             }
