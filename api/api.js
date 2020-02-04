@@ -443,11 +443,13 @@ app.get("/query", (req, res) => {
                         json_output = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
                         console.info("JSON_hum: ", json_output_hum);
                         // write data to file
-                        const filename_sun = './heatmap_creation' + req_username + '_' + 'sunlight' + '.json';
+                        const filename_sun = './heatmap_creation/' + req_username + '_' + 'sunlight' + '.json';
                         fs.writeFileSync(filename_sun, JSON.stringify(json_output_sun));
-                        const filename_hum = './heatmap_creation' + req_username + '_' + 'humidity' + '.json';
+                        const filename_hum = './heatmap_creation/' + req_username + '_' + 'humidity' + '.json';
                         fs.writeFileSync(filename_hum, JSON.stringify(json_output_hum));
-                        createMap(filename_sun, filename_hum);
+                        const exec_path_sun = req_username + '_' + 'sunlight' + '.json';
+                        const exec_path_hum = req_username + '_' + 'humidity' + '.json';
+                        createMap(exec_path_sun, exec_path_hum);
 
                     });
                 });
@@ -504,7 +506,7 @@ app.get("/query", (req, res) => {
                     json_output = provideOutput(JSON.parse(output), JSON.parse(positions), req_username);
                     console.info("JSON: ", json_output);
                     // write data to file
-                    const filename = './heatmap_creation' + req_username + '_' + sensor_type + '.json';
+                    const filename = './heatmap_creation/' + req_username + '_' + sensor_type + '.json';
                     fs.writeFileSync(filename, JSON.stringify(json_output));
                     createMap(filename)
                     
