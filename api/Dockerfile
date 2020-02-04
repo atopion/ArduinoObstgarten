@@ -4,6 +4,7 @@ MAINTAINER r.wetzelt@yahoo.de
 WORKDIR /dist/
 COPY ./Server/libredis.js /dist/
 COPY ./*.json ./*.js /dist/
+COPY ./heatmap_creation/ /dist/
 
 #RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
