@@ -4,6 +4,8 @@ if [ ! -d "./Server/" ]
 then
     echo "Directory ./Server/ doesn't exist, it will be created."
     mkdir ./Server
+fi
+
 if [ ! -d "./heatmap_creation/" ] 
 then
     echo "Directory ./heatmap_creation/ doesn't exist, it will be created."
