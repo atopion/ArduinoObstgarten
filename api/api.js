@@ -221,11 +221,19 @@ function postNodes(req, res) {
 
 };
 
-function createMap(data){
-    return spawn('python', [ 
-      use_path.join("./", 'heatmapper.py'),
-      data
-    ]);
+function createMap(data1, data2){
+    if (typeof data2 === 'undefined') {
+        return spawn('python', [ 
+        use_path.join("./", 'heatmapper.py'),
+        data1
+        ]);
+    }
+    else {
+        return spawn('python', [ 
+            use_path.join("./", 'heatmapper.py'),
+            data1, data2
+        ]);
+    }
   }
 
 app.get("/usr", (req, res) => {
@@ -404,7 +412,49 @@ app.get("/query", (req, res) => {
         console.log("Username belonging to Session key:", req_username);
         if (sensor_type === "forecast") {
 
-            redis_connector.get(req_username)
+            let nodes;
+            let json_output_hum;
+            let json_output_sun
+
+            client.query(req_username)
+        
+            .where('type', 'sunlight')
+            .then(val_sun => {
+                console.log("VAL_SUN: ", val_sun);
+                output_sun = JSON.stringify(val_sun, null, 4);
+                console.info("Output_sun: ", output_sun);
+                console.log("REDIS: ", redis_connector);
+                client.query(req_username)
+                .where('type', 'humidity').then(val_hum => {
+                    console.log("VAL_SUN: ", val_sun);
+                    output_hum = JSON.stringify(val_hum, null, 4);
+                    console.info("Output_hum: ", output_hum);
+                    redis_connector.get(req_username).then(positions => {
+
+                        // Username does not exists in REDIS (user may not have set values)
+                        if(positions === null) {
+                            // Set values to default
+                            positions = '[{"name":"Node 1","x":50,"y":50},{"name":"Node 2","x":450,"y":50},{"name":"Node 3","x":50,"y":450},{"name":"Node 4","x":450,"y":450}]';
+                        }
+                        
+                        console.log("Positions: ", positions);
+                        json_output = provideOutput(JSON.parse(output_sun), JSON.parse(positions), req_username);
+                        console.info("JSON_sun: ", json_output_sun);
+                        json_output = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
+                        console.info("JSON_hum: ", json_output_hum);
+                        // write data to file
+                        const filename_sun = './' + req_username + '_' + 'sunlight' + '.json';
+                        fs.writeFileSync(filename_sun, JSON.stringify(json_output_sun));
+                        const filename_hum = './' + req_username + '_' + 'humidity' + '.json';
+                        fs.writeFileSync(filename_hum, JSON.stringify(json_output_hum));
+                        createMap(filename_sun, filename_hum);
+
+                    });
+                });
+            });
+
+
+            /*redis_connector.get(req_username)
 
             .then(nodes => {
                 output = JSON.parse(nodes);
@@ -421,7 +471,7 @@ app.get("/query", (req, res) => {
                 //createMap(filename)   
             }).then(
                     redis_connector.get(req_username)).then(result => console.info(result))
-            .catch(err => console.error(err));
+            .catch(err => console.error(err));*/
         }
 
         else if(sensor_type === undefined) {
@@ -456,6 +506,7 @@ app.get("/query", (req, res) => {
                     // write data to file
                     const filename = './' + req_username + '_' + sensor_type + '.json';
                     fs.writeFileSync(filename, JSON.stringify(json_output));
+                    createMap(filename)
                     
                 });
             });
