@@ -13,7 +13,7 @@ const http = require('http');
 const https = require('https');
 const cors = require("cors");
 const use_path = require('path');
-const {spawn} = require('child_process');
+const spawn = require('child_process').spawn;
 /**
  * Run python script, pass in `-u` to not buffer console output 
  * @return {ChildProcess}
@@ -438,9 +438,9 @@ app.get("/query", (req, res) => {
                         }
                         
                         console.log("Positions: ", positions);
-                        json_output = provideOutput(JSON.parse(output_sun), JSON.parse(positions), req_username);
+                        json_output_sun = provideOutput(JSON.parse(output_sun), JSON.parse(positions), req_username);
                         console.info("JSON_sun: ", json_output_sun);
-                        json_output = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
+                        json_output_hum = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
                         console.info("JSON_hum: ", json_output_hum);
                         // write data to file
                         const filename_sun = './heatmap_creation/' + req_username + '_' + 'sunlight' + '.json';
@@ -449,7 +449,18 @@ app.get("/query", (req, res) => {
                         fs.writeFileSync(filename_hum, JSON.stringify(json_output_hum));
                         const exec_path_sun = req_username + '_' + 'sunlight' + '.json';
                         const exec_path_hum = req_username + '_' + 'humidity' + '.json';
-                        createMap(exec_path_sun, exec_path_hum);
+                        pyspawn = createMap(exec_path_sun, exec_path_hum);
+                        pyspawn.stdout.on('data', (data) => {
+                            console.log(`stdout: ${data}`);
+                        });
+                        
+                        pyspawn.stderr.on('data', (data) => {
+                            console.log(`stderr: ${data}`);
+                        });
+                        
+                        pyspawn.on('close', (code) => {
+                            console.log(`child process exited with code ${code}`);
+                        });
 
                     });
                 });
@@ -508,7 +519,18 @@ app.get("/query", (req, res) => {
                     // write data to file
                     const filename = './heatmap_creation/' + req_username + '_' + sensor_type + '.json';
                     fs.writeFileSync(filename, JSON.stringify(json_output));
-                    createMap(filename)
+                    pyspawn = createMap(filename);
+                    pyspawn.stdout.on('data', (data) => {
+                        console.log(`stdout: ${data}`);
+                    });
+                    
+                    pyspawn.stderr.on('data', (data) => {
+                        console.log(`stderr: ${data}`);
+                    });
+                    
+                    pyspawn.on('close', (code) => {
+                        console.log(`child process exited with code ${code}`);
+                    });
                     
                 });
             });
