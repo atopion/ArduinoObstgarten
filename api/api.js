@@ -306,7 +306,7 @@ function provideOutput(output, nodes, username) {
             }
         }
     }
-
+    console.info("data: ", data)
     /*while (i >= output_len-nodes.length) {
         sensor_number = output["results"][0]["series"][0]["values"][i][1];
         value = output["results"][0]["series"][0]["values"][i][4];
