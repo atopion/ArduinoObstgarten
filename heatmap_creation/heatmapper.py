@@ -183,11 +183,12 @@ def get_fruit_score(fruit_name):
 
 
 if __name__ == '__main__':
+    print("Input: ", sys.argv)
     if len(sys.argv) == 2:
         print(sys.argv[0])
         filename = sys.argv[1]
         create_heatmap(filename)
-    elif len(sys.argv) > 3:
+    elif len(sys.argv) == 3:
         filename = sys.argv[1]
         print("creating forecast for", sys.argv)
         filename_list = sys.argv[1:len(sys.argv)-1]
