@@ -301,10 +301,10 @@ function provideOutput(output, nodes, username) {
             if(n && n.hasOwnProperty("name") && n.hasOwnProperty("x") && n.hasOwnProperty("y"))
             {
                 console.info("n.name: ", n.name)
-                console.info("Node " + sensor_number)
+                console.info("Node" + sensor_number)
                 console.info("n.x: ", n.x)
                 console.info("n.y: ", n.y)
-                if(n.name === "Node " + sensor_number) {
+                if(n.name === "Node" + sensor_number) {
                     x = n.x;
                     y = n.y;
                     data.push({"x": x, "y": y, "val": val});
