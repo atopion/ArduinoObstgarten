@@ -290,13 +290,20 @@ function provideOutput(output, nodes, username) {
     for(let i = 0; i < values.length; i++) {
         let sensor_number = values[i][1];
         let val = values[i][4];
-
+        console.info("sensor number: ", sensor_number)
+        console.info("val: ", val)
         if(!sensor_number || !val) continue;
 
         for(let a = 0; a < nodes.length; a++) {
             let n = nodes[a];
+            console.info("n: ", nodes[a])
+            console.info(n, n.hasOwnProperty("name"), n.hasOwnProperty("x"), n.hasOwnProperty("y"))
             if(n && n.hasOwnProperty("name") && n.hasOwnProperty("x") && n.hasOwnProperty("y"))
             {
+                console.info("n.name: ", n.name)
+                console.info("Node " + sensor_number)
+                console.info("n.x: ", n.x)
+                console.info("n.y: ", n.y)
                 if(n.name === "Node " + sensor_number) {
                     x = n.x;
                     y = n.y;
