@@ -2,9 +2,10 @@ FROM node:lts-alpine
 #FROM ubuntu:18.04
 MAINTAINER r.wetzelt@yahoo.de
 WORKDIR /dist/
+RUN mkdir -p /dist/heatmap_creation/
 COPY ./Server/libredis.js /dist/
 COPY ./*.json ./*.js /dist/
-COPY ./heatmap_creation/ /dist/
+COPY ./heatmap_creation/ /dist/heatmap_creation/
 
 #RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
