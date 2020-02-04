@@ -224,13 +224,13 @@ function postNodes(req, res) {
 function createMap(data1, data2){
     if (typeof data2 === 'undefined') {
         return spawn('python', [ 
-        use_path.join("./", 'heatmapper.py'),
+        use_path.join("./heatmap_creation", 'heatmapper.py'),
         data1
         ]);
     }
     else {
         return spawn('python', [ 
-            use_path.join("./", 'heatmapper.py'),
+            use_path.join("./heatmap_creation", 'heatmapper.py'),
             data1, data2
         ]);
     }
@@ -443,9 +443,9 @@ app.get("/query", (req, res) => {
                         json_output = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
                         console.info("JSON_hum: ", json_output_hum);
                         // write data to file
-                        const filename_sun = './' + req_username + '_' + 'sunlight' + '.json';
+                        const filename_sun = './heatmap_creation' + req_username + '_' + 'sunlight' + '.json';
                         fs.writeFileSync(filename_sun, JSON.stringify(json_output_sun));
-                        const filename_hum = './' + req_username + '_' + 'humidity' + '.json';
+                        const filename_hum = './heatmap_creation' + req_username + '_' + 'humidity' + '.json';
                         fs.writeFileSync(filename_hum, JSON.stringify(json_output_hum));
                         createMap(filename_sun, filename_hum);
 
@@ -504,7 +504,7 @@ app.get("/query", (req, res) => {
                     json_output = provideOutput(JSON.parse(output), JSON.parse(positions), req_username);
                     console.info("JSON: ", json_output);
                     // write data to file
-                    const filename = './' + req_username + '_' + sensor_type + '.json';
+                    const filename = './heatmap_creation' + req_username + '_' + sensor_type + '.json';
                     fs.writeFileSync(filename, JSON.stringify(json_output));
                     createMap(filename)
                     
