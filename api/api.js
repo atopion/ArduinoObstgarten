@@ -223,13 +223,13 @@ function postNodes(req, res) {
 
 function createMap(data1, data2){
     if (typeof data2 === 'undefined') {
-        return spawn('python', [ 
+        return spawn('python3', [ 
         use_path.join("./heatmap_creation", 'heatmapper.py'),
         data1
         ]);
     }
     else {
-        return spawn('python', [ 
+        return spawn('python3', [ 
             use_path.join("./heatmap_creation", 'heatmapper.py'),
             data1, data2
         ]);
