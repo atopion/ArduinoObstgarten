@@ -455,7 +455,7 @@ app.get("/query", (req, res) => {
                     console.info("JSON: ", json_output);
                     // write data to file
                     const filename = './' + req_username + '_' + sensor_type + '.json';
-                    fs.writeFileSync(filename, JSON.parse(json_output));
+                    fs.writeFileSync(filename, JSON.stringify(json_output));
                     
                 });
             });
