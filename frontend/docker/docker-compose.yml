@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:5-alpine
     ports:
-      - "5000"
+      - "5000:5000"
     volumes:
       - "/c/code/node/ArduinoObstgarten/frontend/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro"
       - "/c/code/tmp/redis/data:/data:rw"
@@ -13,17 +13,17 @@ services:
     container_name: redis
     command: redis-server /usr/local/etc/redis/redis.conf
 
-  frontend:
-    image: atopi/arduino_obstgarten:latest
-    volumes:
-      - "/c/Users/atopi/.ssh/localcerts:/cert:rw"
-    ports:
-      - "80:3000"
-      - "3030"
-      - "443:3043"
-    environment:
-      - SSL_ACTIVE=1
-    depends_on: redis
-    container_name: frontend
-    depends_on:
-      - "redis"
+  #frontend:
+  #  image: atopi/arduino_obstgarten:latest
+  #  volumes:
+  #    - "/c/Users/atopi/.ssh/localcerts:/cert:rw"
+  #  ports:
+  #    - "80:3000"
+  #    - "3030"
+  #    - "443:3043"
+  #  environment:
+  #    - SSL_ACTIVE=1
+  #  depends_on: redis
+  #  container_name: frontend
+  #  depends_on:
+  #    - "redis"

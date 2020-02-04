@@ -1,0 +1,40 @@
+digraph G {
+    {
+        sensor [shape=proteinstab style=filled]
+        arduino [shape=invhouse style=filled]
+        raspberry [shape=rectangle style=filled]
+        node1 [shape=square style=filled]
+        node2 [shape=square style=filled]
+        node3 [shape=square style=filled]
+        node4 [shape=square style=filled]
+        database [shape=cylinder style=filled]
+        webgui [shape=house style=filled]
+    }
+
+    subgraph sensornode {
+	{
+        	rankdir=TB
+		rank=same
+        
+        	sensor -> arduino[dir=none];
+        	arduino -> raspberry[dir=none];
+	}
+    }
+
+    subgraph dataflow {
+        {
+		rankdir=LR
+		rank=same
+	
+        	node3 -> database[dir=none];
+        	database -> webgui[dir=none];
+        	raspberry -> { node1, node2 }[dir=none];
+        	node1 -> { node2, node3 }[dir=none];
+        	node2 -> { node3, node4 }[dir=none];
+        	node3 -> { node4 }[dir=none];
+	}
+
+    }
+
+
+}

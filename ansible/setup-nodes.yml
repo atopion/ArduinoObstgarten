@@ -43,6 +43,24 @@
         name: iproute2
         state: present
 
+    - name: Install git
+      become: true
+      package:
+        name: git
+        state: present
+  
+    - name: Install python3
+      become: true
+      package:
+        name: python3
+        state: present
+
+    - name: Install pip
+      become: true
+      package:
+        name: python3-pip
+        state: present
+
     - name: Place batman-adv in /etc/modules
       become: true
       lineinfile:
@@ -63,6 +81,7 @@
         - { line: "ifconfig bat0 192.168.111.{{ node.stdout }}", after: "^ifconfig bat0 up" }
         - { line: "batctl gw client", after: "^ifconfig bat0 192.168.111.{{ node.stdout }}" }
         - { line: "route add default gw 192.168.111.10 bat0", after: "^batctl gw client" }
+        - { line: "nohup python3 /home/pi/ArduinoObstgarten/serial_read.py </dev/null >>/home/pi/script-output.log 2>&1 &", after: "^route add default gw 192.168.111.10 bat0"}
 
     - name: Set nameserver to 8.8.8.8
       become: true
@@ -111,9 +130,8 @@
         name:
           - serial
           - requests
-          - time
       ignore_errors: true
 
     - name: Start python script
       become: true
-      shell: nohup python /home/pi/ArduinoObstgarten/serial_read.py </dev/null >/dev/null 2>&1 &
+      shell: nohup python3 /home/pi/ArduinoObstgarten/serial_read.py </dev/null >>/home/pi/script-output.log 2>&1 &
