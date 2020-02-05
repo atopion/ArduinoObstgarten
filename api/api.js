@@ -164,7 +164,7 @@ function postToDB(req, res, next) {
     res.status(200).send("Alles ok");
     next();
 
-    console.log("POST: ", post);
+    // console.log("POST: ", post);
 }
 
   
@@ -177,9 +177,9 @@ function postNodes(req, res) {
     request("http://" + SESSION_SERVER + ":3030/sessions", function (error, response, body) {
 
         let sessions = JSON.parse(body);
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+        // console.log('error:', error); // Print the error if one occurred
+        // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        // console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
 
         for (let k of Object.keys(sessions)) {
             let s = sessions[k];
@@ -189,7 +189,7 @@ function postNodes(req, res) {
             }
         }
     
-        console.info("Method", req.method);
+        // console.info("Method", req.method);
         const method = req.method;
 
         if(method === "GET" && session_found === true) {
@@ -198,7 +198,7 @@ function postNodes(req, res) {
         }
         else if(method === "POST" && session_found === true) {
             let post = req.body;
-            console.info("POST: ", post);
+            // console.info("POST: ", post);
             redis_connector.set(req_username, post);
             // take coordinates and post to redis DB
             /*
@@ -249,9 +249,9 @@ app.get("/usr", (req, res) => {
     request("http://" + SESSION_SERVER + ":3030/sessions", function (error, response, body) {
 
         let valid_sessions = JSON.parse(body);
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+        // console.log('error:', error); // Print the error if one occurred
+        // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        // console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
 
         let session_found = false; // indicating whether given cookie session id is valid
         let req_username = undefined;
@@ -273,17 +273,25 @@ app.get("/usr", (req, res) => {
 });
 
 function provideOutput(output, nodes, username) {
-    console.info("OUTPUT: ", JSON.stringify(output, null, 4));
-    console.info("NODES: ", nodes);
+    // console.info("OUTPUT: ", JSON.stringify(output, null, 4));
+    // console.info("NODES: ", nodes);
 
     // Optional chaining in case the path does not exist.
     let values = output && output.results && output.results[0] && output.results[0].series &&
         output.results[0].series[0] && output.results[0].series[0].values;
 
+    let currentDate = new Date();
+    let minutes = currentDate.getMinutes();
+    let hours = currentDate.getHours();
+    let date = currentDate.getDate();
+    let month = currentDate.getMonth(); //Be careful! January is 0 not 1
+    let year = currentDate.getFullYear();
+    let timestamp = year +"-"+ (month+1) +"-"+ date +" "+ hours + ":" + minutes;
+
     // Stop if values is undefined or not a fitting array (path does not exist).
-    console.log(Array.isArray(nodes));
-    if(!values || !Array.isArray(values)) return "[]";
-    if(!nodes || !Array.isArray(nodes)) return "[]";
+    // console.log(Array.isArray(nodes));
+    if(!values || !Array.isArray(values)) return {"time": timestamp, "user": username, "data": [] };
+    if(!nodes || !Array.isArray(nodes)) return {"time": timestamp, "user": username, "data": [] };
 
     //let i = values.length -1;
     //let output_len = values.length;
@@ -298,20 +306,20 @@ function provideOutput(output, nodes, username) {
     for(let i = 0; i < values.length; i++) {
         let sensor_number = values[i][1];
         let val = values[i][4];
-        console.info("sensor number: ", sensor_number)
-        console.info("val: ", val)
+        // console.info("sensor number: ", sensor_number)
+        // console.info("val: ", val)
         if(!sensor_number || !val) continue;
 
         for(let a = 0; a < nodes.length; a++) {
             let n = nodes[a];
-            console.info("n: ", nodes[a])
-            console.info(n, n.hasOwnProperty("name"), n.hasOwnProperty("x"), n.hasOwnProperty("y"))
+            //console.info("n: ", nodes[a])
+            // console.info(n, n.hasOwnProperty("name"), n.hasOwnProperty("x"), n.hasOwnProperty("y"))
             if(n && n.hasOwnProperty("name") && n.hasOwnProperty("x") && n.hasOwnProperty("y"))
             {
-                console.info("n.name: ", n.name)
-                console.info("Node" + sensor_number)
-                console.info("n.x: ", n.x)
-                console.info("n.y: ", n.y)
+                // console.info("n.name: ", n.name)
+                // console.info("Node" + sensor_number)
+                // console.info("n.x: ", n.x)
+                // console.info("n.y: ", n.y)
                 if(n.name === "Node" + sensor_number) {
                     x = n.x;
                     y = n.y;
@@ -353,14 +361,6 @@ function provideOutput(output, nodes, username) {
         }
         i--;
     }*/
-    let currentDate = new Date();
-    let minutes = currentDate.getMinutes();
-    let hours = currentDate.getHours();
-    let date = currentDate.getDate();
-    let month = currentDate.getMonth(); //Be careful! January is 0 not 1
-    let year = currentDate.getFullYear();
-    let timestamp = year +"-"+ (month+1) +"-"+ date +" "+ hours + ":" + minutes;
-
     return {"time": timestamp, "user": username, "data": data};
 }
 
@@ -377,18 +377,18 @@ app.get("/query", (req, res) => {
     console.log("Session key of requester:", req.cookies["SESSION"]);
     const cookie = req.cookies["SESSION"];  // session id
     const sensor_type = req.query.type; //sensor type (sunlight,wind,humidity)
-    console.log("REQ: ", req);
+    //console.log("REQ: ", req);
     //console.log(sensor_type);
 
     // request valid session ids
     request("http://" + SESSION_SERVER + ":3030/sessions", function (error, response, body) {
 
-        console.log("Body: ", body);
+        //console.log("Body: ", body);
         const valid_sessions = JSON.parse(body);
         let req_username = undefined;
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
+        //console.log('error:', error); // Print the error if one occurred
+        //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        //console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage.
 
         let session_found = false; // indicating whether given cookie session id is valid
 
@@ -420,15 +420,15 @@ app.get("/query", (req, res) => {
         
             .where('type', 'sunlight')
             .then(val_sun => {
-                console.log("VAL_SUN: ", val_sun);
+                //console.log("VAL_SUN: ", val_sun);
                 output_sun = JSON.stringify(val_sun, null, 4);
-                console.info("Output_sun: ", output_sun);
-                console.log("REDIS: ", redis_connector);
+                //console.info("Output_sun: ", output_sun);
+                //console.log("REDIS: ", redis_connector);
                 client.query(req_username)
                 .where('type', 'humidity').then(val_hum => {
-                    console.log("VAL_SUN: ", val_sun);
+                    //console.log("VAL_SUN: ", val_sun);
                     output_hum = JSON.stringify(val_hum, null, 4);
-                    console.info("Output_hum: ", output_hum);
+                    //console.info("Output_hum: ", output_hum);
                     redis_connector.get(req_username).then(positions => {
 
                         // Username does not exists in REDIS (user may not have set values)
@@ -437,11 +437,11 @@ app.get("/query", (req, res) => {
                             positions = '[{"name":"Node 1","x":50,"y":50},{"name":"Node 2","x":450,"y":50},{"name":"Node 3","x":50,"y":450},{"name":"Node 4","x":450,"y":450}]';
                         }
                         
-                        console.log("Positions: ", positions);
+                        //console.log("Positions: ", positions);
                         json_output_sun = provideOutput(JSON.parse(output_sun), JSON.parse(positions), req_username);
-                        console.info("JSON_sun: ", json_output_sun);
+                        //console.info("JSON_sun: ", json_output_sun);
                         json_output_hum = provideOutput(JSON.parse(output_hum), JSON.parse(positions), req_username);
-                        console.info("JSON_hum: ", json_output_hum);
+                        //console.info("JSON_hum: ", json_output_hum);
                         // write data to file
                         const filename_sun = './heatmap_creation/' + req_username + '_' + 'sunlight' + '.json';
                         fs.writeFileSync(filename_sun, JSON.stringify(json_output_sun));
@@ -501,10 +501,10 @@ app.get("/query", (req, res) => {
         
             .where('type', sensor_type)
             .then(val => {
-                console.log("VAL: ", val);
+                //console.log("VAL: ", val);
                 output = JSON.stringify(val, null, 4);
-                console.info("Output: ", output);
-                console.log("REDIS: ", redis_connector);
+                //console.info("Output: ", output);
+                //console.log("REDIS: ", redis_connector);
                 redis_connector.get(req_username).then(positions => {
 
                     // Username does not exists in REDIS (user may not have set values)
@@ -513,9 +513,9 @@ app.get("/query", (req, res) => {
                         positions = '[{"name":"Node 1","x":50,"y":50},{"name":"Node 2","x":450,"y":50},{"name":"Node 3","x":50,"y":450},{"name":"Node 4","x":450,"y":450}]';
                     }
 
-                    console.log("Positions: ", positions);
+                    //console.log("Positions: ", positions);
                     json_output = provideOutput(JSON.parse(output), JSON.parse(positions), req_username);
-                    console.info("JSON: ", json_output);
+                    // console.info("JSON: ", json_output);
                     // write data to file
                     const filename = './heatmap_creation/' + req_username + '_' + sensor_type + '.json';
                     fs.writeFileSync(filename, JSON.stringify(json_output));
@@ -548,6 +548,7 @@ app.get("/query", (req, res) => {
 });*/
 app.use("/values", postToDB);
 app.use("/nodes", postNodes);
+app.use("/images", express.static("heatmap_creation"));
 //app.post("/nodes", postNodes);
 //app.get("/nodes", postNodes);
 

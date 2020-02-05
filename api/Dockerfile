@@ -1,4 +1,5 @@
-FROM node:lts-alpine
+FROM node:lts-buster-slim
+#FROM node:lts-alpine
 #FROM ubuntu:18.04
 MAINTAINER r.wetzelt@yahoo.de
 WORKDIR /dist/
@@ -11,16 +12,19 @@ COPY ./heatmap_creation/ /dist/heatmap_creation/
 
 RUN npm install
 
-#RUN apt-get update && apt-get install -y --no-install-recommends \
-#    python3.7 \
-#    python3-pip \
-#    && \
-#apt-get clean && \
-#rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    		build-essential \
+    		python3 \
+    		python3-pip && \
+    		apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
 
-RUN apk update \ 
-	&& apk add python3 py-pip \
-	&& rm -rf /var/cache/apk/* \
+#RUN apk update \ 
+#	&& apk add python3 py-pip \
+#        && pip3 install --upgrade pip \
+#        && apk add --no-cache python3-dev libstdc++ \
+#        && apk add --no-cache g++ \
+#	&& ln -s /usr/include/locale.h /usr/include/xlocale.h
 	
 #RUN echo "**** install Python ****" && \
 #    apk add --no-cache python3 && \
@@ -32,7 +36,7 @@ RUN apk update \
 #    pip3 install --no-cache --upgrade pip setuptools wheel && \
 #    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
 
-RUN pip install pandas, seaborn, json, matplotlib, scipy
+RUN pip3 install pandas seaborn matplotlib scipy
 
 EXPOSE 3000
 EXPOSE 3001
