@@ -26,17 +26,18 @@ def create_forecast(json_file_list, fruit):
             df_total_humidity = create_heatmap(json_file, out=True).subtract(fruit_score['humidity']).abs()
         else:
             raise ValueError('One or more dataframes not specified')
-        with open(json_file) as f:
+        with open(json_file, 'r') as f:
             json_data = json.load(f)
             time = json_data["time"]
+            user = json_data["user"]
 
     df_total = df_total_light + df_total_humidity
     fig, ax = plt.subplots(figsize=(5, 5))
     im = ax.imshow(df_total.to_numpy(), cmap='RdYlGn_r')
     ax.set_title(fruit.capitalize() + ' ' + time)
     cbar = fig.colorbar(im, ax=ax)
-    plt.show()
-    fig.savefig('forecast.png')
+    # plt.show()
+    fig.savefig(user + '_forecast_' + fruit + '.png')
     return df_total
 
 
@@ -50,7 +51,7 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
     :return: dataframe with values used for creating the heatmap
     """
 
-    with open(json_file) as f:
+    with open(json_file, 'r') as f:
         json_data = json.load(f)
         usr = json_data["user"]
         time = json_data["time"]
@@ -64,6 +65,8 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
         x_points.append(element["x"])
         y_points.append(element["y"])
 
+    if not x_points or not y_points:
+        raise ValueError('Data field in ' + json_file + ' is empty or values are missing')
     # create and fill dataframe from json
     df = pd.DataFrame()
     for x in range(0, max(set(x_points))+1, 1):
@@ -89,7 +92,7 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
     cbar = fig.colorbar(im, ax=ax)
     if out is True:
         # plt.show()
-        fig.savefig(json_file + '.png')
+        fig.savefig(json_file[:len(json_file)-5] + '.png')
     return compact_df
 
 
@@ -178,17 +181,18 @@ def get_fruit_score(fruit_name):
         return {'light': 65000, 'humidity': 65}
     if fruit_name == 'apple':
         return {'light': 30000, 'humidity': 35}
+    if fruit_name == 'soybeans':
+        return {'light': 50000, 'humidity': 45}
     else:
         return {'light': 100000, 'humidity': 100}
 
 
 if __name__ == '__main__':
-    print("Input: ", sys.argv)
     if len(sys.argv) == 2:
         print(sys.argv[0])
         filename = sys.argv[1]
         create_heatmap(filename)
-    elif len(sys.argv) == 3:
+    elif len(sys.argv) > 3:
         filename = sys.argv[1]
         print("creating forecast for", sys.argv)
         filename_list = sys.argv[1:len(sys.argv)-1]
