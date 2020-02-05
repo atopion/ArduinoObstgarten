@@ -70,7 +70,7 @@ void loop() {
     Serial.println(0);
   } else {
     Serial.print("h");
-    Serial.println((avg - thresh)*0.2);
+    Serial.println(avg - thresh);
   }
   
   Serial.print("l");
@@ -79,5 +79,5 @@ void loop() {
   Serial.println("e");
   // wait a bit for the analog-to-digital converter to stabilize after the last
   // reading:
-  delay(100);
+  delay(20000);
 }
