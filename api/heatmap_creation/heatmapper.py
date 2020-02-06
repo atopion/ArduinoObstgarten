@@ -21,22 +21,23 @@ def create_forecast(json_file_list, fruit):
     # calculate differences of light and humidity amounts from given average needs of the fruit
     for json_file in json_file_list:
         if 'light' in json_file:
-            df_total_light = create_heatmap(json_file, out=True).subtract(fruit_score['light']).abs()
+            df_total_light = create_heatmap(json_file, out=False).subtract(fruit_score['light']).abs()
         elif 'humidity' in json_file:
-            df_total_humidity = create_heatmap(json_file, out=True).subtract(fruit_score['humidity']).abs()
+            df_total_humidity = create_heatmap(json_file, out=False).subtract(fruit_score['humidity']).abs()
         else:
             raise ValueError('One or more dataframes not specified')
         with open(json_file, 'r') as f:
-            json_data = json.loads(f)
+            json_data = json.load(f)
             time = json_data["time"]
+            user = json_data["user"]
 
     df_total = df_total_light + df_total_humidity
     fig, ax = plt.subplots(figsize=(5, 5))
     im = ax.imshow(df_total.to_numpy(), cmap='RdYlGn_r')
-    ax.set_title(fruit.capitalize() + ' ' + time)
+    ax.set_title(fruit.capitalize() + ' forecast\nlower is better')
     cbar = fig.colorbar(im, ax=ax)
-    plt.show()
-    fig.savefig('forecast.png')
+    # plt.show()
+    fig.savefig(user + '_forecast_' + fruit + '.png')
     return df_total
 
 
@@ -50,9 +51,8 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
     :return: dataframe with values used for creating the heatmap
     """
 
-    with open(json_file) as x:
-        f = x.read()
-        json_data = json.loads(f)
+    with open(json_file, 'r') as f:
+        json_data = json.load(f)
         usr = json_data["user"]
         time = json_data["time"]
         del json_data["time"]
@@ -64,6 +64,9 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
     for element in json_data['data']:
         x_points.append(element["x"])
         y_points.append(element["y"])
+
+    if not x_points or not y_points:
+        raise ValueError('Data field in ' + json_file + ' is empty or values are missing')
 
     # create and fill dataframe from json
     df = pd.DataFrame()
@@ -79,18 +82,19 @@ def create_heatmap(json_file, rev_cmap: bool = False, out: bool = True, cmap: st
 
     compact_df = rearrange_data(df)
     compact_df = interpol_data(compact_df)
-
+    sensor_type = json_file.split('_')[1]
+    sensor_type = sensor_type[:len(sensor_type)-5]
     # create figure and save to png file using custom parameters
     fig, ax = plt.subplots(figsize=(5, 5))
     if rev_cmap is True:
         im = ax.imshow(compact_df.to_numpy(), cmap=cmap + '_r')
     else:
         im = ax.imshow(compact_df.to_numpy(), cmap=cmap)
-    ax.set_title(usr + ' ' + time)
+    ax.set_title(usr + ' ' + sensor_type)
     cbar = fig.colorbar(im, ax=ax)
     if out is True:
         # plt.show()
-        fig.savefig(json_file + '.png')
+        fig.savefig(json_file[:len(json_file)-5] + '.png')
     return compact_df
 
 
@@ -165,7 +169,7 @@ def interpol_data(df):
     # drop nan and zero rows needed for smooth interpolation
     df = df.drop(columns=[0, 1, df.shape[1] - 2, df.shape[1] - 1])
     df = df.drop([0, 1, df.shape[0] - 2, df.shape[0] - 1])
-    print('End of interpol_data\n', df.to_string())
+    # print('End of interpol_data\n', df.to_string())
     return df
 
 
@@ -179,22 +183,26 @@ def get_fruit_score(fruit_name):
         return {'light': 65000, 'humidity': 65}
     if fruit_name == 'apple':
         return {'light': 30000, 'humidity': 35}
+    if fruit_name == 'soybeans':
+        return {'light': 50000, 'humidity': 45}
     else:
         return {'light': 100000, 'humidity': 100}
 
 
 if __name__ == '__main__':
-    print("Input: ", sys.argv)
-    if len(sys.argv) == 2:
-        print(sys.argv[0])
-        filename = sys.argv[1]
-        create_heatmap(filename)
-    elif len(sys.argv) == 3:
-        filename = sys.argv[1]
-        print("creating forecast for", sys.argv)
-        filename_list = sys.argv[1:len(sys.argv)-1]
-        create_forecast(filename_list, sys.argv[len(sys.argv)-1])
-    else:
-        print("wrong number of arguments, using dummy")
-        create_forecast(["user2_light.json", "user2_humidity.json"], "apple")
-        # create_heatmap("user4_dat.json")
+    try:
+        if len(sys.argv) == 2:
+            print(sys.argv[0])
+            filename = sys.argv[1]
+            create_heatmap(filename)
+        elif len(sys.argv) > 3:
+            filename = sys.argv[1]
+            print("creating forecast for", sys.argv)
+            filename_list = sys.argv[1:len(sys.argv)-1]
+            create_forecast(filename_list, sys.argv[len(sys.argv)-1])
+        else:
+            print("wrong number of arguments, using dummy")
+            create_forecast(["Atomfried_light.json", "Atomfried_humidity.json"], "apple")
+            # create_heatmap("user2_light.json")
+    except ValueError:
+        print("Empty data!")
