@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class LogoutService {
 
-    username:string = "  ";
+    username:string = "";
 
     constructor() {
         this.get_usr();
@@ -25,6 +25,7 @@ export class LogoutService {
                     this.username = "USR";
             }
         };
+        xhr.withCredentials = true;
         xhr.open("GET", usr_url);
         xhr.send();
     }
@@ -42,6 +43,7 @@ export class LogoutService {
                     window.location.reload();
                 }
             };
+            xhr.withCredentials = true;
             xhr.send("");
         })();
     }

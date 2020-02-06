@@ -46,6 +46,7 @@ export class HomePage {
                 }
             }
         };
+        xhr.withCredentials = true;
         xhr.open("GET", load_url);
         xhr.send(JSON.stringify(this.nodeList));
     }
@@ -64,6 +65,7 @@ export class HomePage {
                 }
             }
         };
+        xhr.withCredentials = true;
         xhr.open("POST", confirm_url);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(this.nodeList));

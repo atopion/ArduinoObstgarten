@@ -12,11 +12,11 @@ export class MaturityPage implements OnInit {
 
     mapLoading: boolean = true;
 
-    currentMap: string = "https://picsum.photos/500/500";
+    currentMap: string = "https://www.bat-obstgarten.de:3000/images/" + this.username + "_forecast_" + "tomato" + ".png";
 
     maps: {id: number, value: string, name: string}[] = [
-        {id: 1, value: "tomatoes", name: "Tomatoes"},
-        {id: 2, value: "wheat", name: "Wheat"},
+        {id: 1, value: "tomato", name: "Tomatoes"},
+        {id: 2, value: "apple", name: "Apple"},
         {id: 3, value: "soybeans", name: "Soybeans"}
     ];
 
@@ -30,10 +30,18 @@ export class MaturityPage implements OnInit {
     loadNewImage(): void {
         console.log("Load new image");
         this.mapLoading = true;
-        this.currentMap = this.currentMap + "?" + new Date().getTime();
-
-        const url = "https://141.5.104.8/query?type=forecast&fruit=" + (this.getMapForID(Number(this.selectedMap)) || "tomatoes");
-        console.log("URL: " + url);
+        let fruit = (this.getMapForID(Number(this.selectedMap)) || "tomato");
+        console.log(fruit);
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            if(xhr.readyState === 4) {
+                this.currentMap = "https://www.bat-obstgarten.de:3000/images/" + this.username + "_forecast_" + fruit + ".png";
+                this.mapLoading = false;
+            }
+        };
+        xhr.withCredentials = true;
+        xhr.open("GET", "https://www.bat-obstgarten.de:3000/query?type=forecast&fruit=" + fruit);
+        xhr.send();
     }
 
     mapLoaded(): void {
@@ -41,11 +49,11 @@ export class MaturityPage implements OnInit {
     }
 
     /** Helpers **/
-    getMapForID(id: number): {id: number, value: string, name: string} | null {
-        this.maps.forEach((value, index) => {
-            if(value.id === id)
-                return this.maps[index];
-        });
+    getMapForID(id: number): string | null {
+        for(let map of this.maps) {
+            if(map.id === id)
+                return map.value;
+        }
         return null;
     }
 

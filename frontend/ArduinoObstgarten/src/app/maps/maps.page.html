@@ -27,7 +27,7 @@
         </tr>
     </table>
 
-    <img [hidden]="mapLoading" src="{{ currentMap }}" alt="Could not load map" (load)="mapLoaded()">
+    <img [hidden]="mapLoading" src="{{ currentMap }}" alt="Could not load map">
     <div class="spinnerContainer" [hidden]="!mapLoading">
         <ion-spinner duration="indefinite"></ion-spinner>
     </div>
